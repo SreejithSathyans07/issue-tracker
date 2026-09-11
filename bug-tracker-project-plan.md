@@ -16,21 +16,21 @@
   - Inside `/client`, run `ng new`
 - [x] **1.4** Scaffold .NET WebAPI project
   - Inside `/server`, run `dotnet new webapi`
-- [ ] **1.5** Run both locally
+- [x] **1.5** Run both locally
   - Confirm default pages/Swagger load
-- [ ] **1.6** Push initial commit to Git
+- [x] **1.6** Push initial commit to Git
 
 ---
 
 ## Stage 2: Database Design
 
-- [ ] **2.1** List out tables needed
+- [x] **2.1** List out tables needed
   - Users, Bugs, Variants, Impacts, Statuses (lookup tables for Impact/Status keep values clean)
-- [ ] **2.2** Draw a simple ER diagram
+- [x] **2.2** Draw a simple ER diagram
   - Bug table with FKs to Variant/Impact/Status/User
-- [ ] **2.3** Create Azure SQL Database
+- [x] **2.3** Create Azure SQL Database
   - Apply the Free Offer
-- [ ] **2.4** Get connection string
+- [x] **2.4** Get connection string
   - Test connection from local machine
 - [ ] **2.5** Install EF Core + SQL Server provider
   - In the .NET project
