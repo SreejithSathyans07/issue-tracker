@@ -1,3 +1,5 @@
+using System.Security.Claims;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using issue_tracker_server.Dtos;
 using issue_tracker_server.Services;
@@ -46,5 +48,15 @@ public class AuthController : ControllerBase
         }
 
         return Ok(result);
+    }
+
+    [Authorize]
+    [HttpGet("me")]
+    public IActionResult Me()
+    {
+        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier) ?? User.FindFirstValue("sub");
+        var username = User.FindFirstValue(ClaimTypes.Name);
+
+        return Ok(new { userId, username });
     }
 }

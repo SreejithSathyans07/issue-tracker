@@ -48,9 +48,9 @@
   - Hash password, save user
 - [x] **3.3** Build Login endpoint
   - Verify password, issue JWT
-- [ ] **3.4** Add JWT middleware
+- [x] **3.4** Add JWT middleware
   - Protects endpoints
-- [ ] **3.5** Test both endpoints
+- [x] **3.5** Test both endpoints
   - Via Swagger/Postman
 
 ---
