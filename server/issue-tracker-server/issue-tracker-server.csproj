@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>net10.0</TargetFramework>
-    <Nullable>disable</Nullable>
+    <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <RootNamespace>issue_tracker_server</RootNamespace>
     <UserSecretsId>9c524ff8-e052-4f32-a21a-b23f785c0e12</UserSecretsId>
