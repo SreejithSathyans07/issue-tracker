@@ -24,6 +24,24 @@ public class AppDbContext : DbContext
             .HasConversion<string>();
 
         modelBuilder.Entity<Bug>()
+            .HasOne(b => b.Variant)
+            .WithMany()
+            .HasForeignKey(b => b.VariantId)
+            .OnDelete(DeleteBehavior.Restrict);
+
+        modelBuilder.Entity<Bug>()
+            .HasOne(b => b.Impact)
+            .WithMany()
+            .HasForeignKey(b => b.ImpactId)
+            .OnDelete(DeleteBehavior.Restrict);
+
+        modelBuilder.Entity<Bug>()
+            .HasOne(b => b.Status)
+            .WithMany()
+            .HasForeignKey(b => b.StatusId)
+            .OnDelete(DeleteBehavior.Restrict);
+
+        modelBuilder.Entity<Bug>()
             .HasOne(b => b.Reporter)
             .WithMany()
             .HasForeignKey(b => b.ReporterId)

@@ -60,7 +60,7 @@
 - [x] **4.1** Add `Role` (Admin/User) to User entity + migration
 - [x] **4.2** Design Permissions model
   - Roles: Admin (Reader, Writer, Administration), User (Reader, Writer)
-- [ ] **4.3** Add permission checks to relevant endpoints
+- [x] **4.3** Add permission checks to relevant endpoints
   - e.g. only Administration permission can add/edit Impacts, Statuses, Variants
 - [x] **4.4** Include role/permissions in JWT claims
 - [x] **4.5** Test permission enforcement
@@ -69,6 +69,7 @@
 ---
 
 ## Stage 5: Backend — Refresh Tokens
+_(Skipped for now — will revisit once frontend auth (Stage 7) surfaces the need for silent token renewal.)_
 
 - [ ] **5.1** Design refresh token model
   - Token value, UserId, expiry, revoked flag; stored in a new RefreshTokens table
@@ -83,15 +84,18 @@
 
 ## Stage 6: Backend — Bug CRUD API
 
-- [ ] **6.1** Create Bug entity + migration
-  - Fields: BugId, Title, Description, AffectedBuild, Impact, Reporter, Responsible, Status, FixedBuild, Variant
-- [ ] **6.2** Build "Create Bug" endpoint
-- [ ] **6.3** Build "Get all bugs" endpoint
+- [x] **6.1** Create Bug entity + migration
+  - Fields: BugId, Title, Description, AffectedBuild, Impact, Reporter, Responsible, Status, FixedBuild, Variant, ExpectedBehavior, Remarks
+  - Also seeded Impacts/Variants/Statuses lookup data via `HasData`
+- [x] **6.2** Build "Create Bug" endpoint
+- [x] **6.3** Build "Get all bugs" endpoint
   - No filters yet
-- [ ] **6.4** Build "Update bug" endpoint
+- [x] **6.4** Build "Update bug" endpoint
   - For status change, resolving
-- [ ] **6.5** Test all endpoints
-  - Via Swagger/Postman
+- [x] **6.5** Test all endpoints
+  - Via Postman
+- [x] **6.6** (Added) CRUD endpoints for Variants, Impacts, Statuses
+  - GET open to any authorized user; POST/PUT/DELETE gated by `Administration` permission policy
 
 ---
 
