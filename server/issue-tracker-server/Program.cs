@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using issue_tracker_server.Data;
+using issue_tracker_server.Models;
 using issue_tracker_server.Services;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -35,7 +36,14 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
         };
     });
 
-builder.Services.AddAuthorization();
+builder.Services.AddAuthorization(options =>
+{
+    foreach (var permission in Enum.GetValues<Permission>())
+    {
+        options.AddPolicy(permission.ToString(), policy =>
+            policy.RequireClaim("permission", permission.ToString()));
+    }
+});
 
 var app = builder.Build();
 
