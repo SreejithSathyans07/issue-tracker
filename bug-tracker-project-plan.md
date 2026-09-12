@@ -43,8 +43,8 @@
 
 ## Stage 3: Backend — Auth
 
-- [ ] **3.1** Create User entity + migration
-- [ ] **3.2** Build Signup endpoint
+- [x] **3.1** Create User entity + migration
+- [x] **3.2** Build Signup endpoint
   - Hash password, save user
 - [ ] **3.3** Build Login endpoint
   - Verify password, issue JWT
@@ -55,81 +55,94 @@
 
 ---
 
-## Stage 4: Backend — Bug CRUD API
+## Stage 4: Backend — Roles & Permissions (RBAC)
 
-- [ ] **4.1** Create Bug entity + migration
+- [ ] **4.1** Add `Role` (Admin/User) to User entity + migration
+- [ ] **4.2** Design Permissions model
+  - Roles: Admin (Reader, Writer, Administration), User (Reader, Writer)
+- [ ] **4.3** Add permission checks to relevant endpoints
+  - e.g. only Administration permission can add/edit Impacts, Statuses, Variants
+- [ ] **4.4** Include role/permissions in JWT claims
+- [ ] **4.5** Test permission enforcement
+  - Via Swagger/Postman with different roles
+
+---
+
+## Stage 5: Backend — Bug CRUD API
+
+- [ ] **5.1** Create Bug entity + migration
   - Fields: BugId, Title, Description, AffectedBuild, Impact, Reporter, Responsible, Status, FixedBuild, Variant
-- [ ] **4.2** Build "Create Bug" endpoint
-- [ ] **4.3** Build "Get all bugs" endpoint
+- [ ] **5.2** Build "Create Bug" endpoint
+- [ ] **5.3** Build "Get all bugs" endpoint
   - No filters yet
-- [ ] **4.4** Build "Update bug" endpoint
+- [ ] **5.4** Build "Update bug" endpoint
   - For status change, resolving
-- [ ] **4.5** Test all endpoints
+- [ ] **5.5** Test all endpoints
   - Via Swagger/Postman
 
 ---
 
-## Stage 5: Frontend — Auth Pages
+## Stage 6: Frontend — Auth Pages
 
-- [ ] **5.1** Create Login page + form
-- [ ] **5.2** Create Signup page + form
-- [ ] **5.3** Connect both to backend APIs
-- [ ] **5.4** Store JWT
+- [ ] **6.1** Create Login page + form
+- [ ] **6.2** Create Signup page + form
+- [ ] **6.3** Connect both to backend APIs
+- [ ] **6.4** Store JWT
   - In memory or localStorage; redirect to landing page on success
-- [ ] **5.5** Add route guard
+- [ ] **6.5** Add route guard
   - Landing page requires login
 
 ---
 
-## Stage 6: Frontend — Landing Page (Basic)
+## Stage 7: Frontend — Landing Page (Basic)
 
-- [ ] **6.1** Create landing page component with a table
-- [ ] **6.2** Call "Get all bugs" API
+- [ ] **7.1** Create landing page component with a table
+- [ ] **7.2** Call "Get all bugs" API
   - Render rows
-- [ ] **6.3** Add "New Bug" button + form
+- [ ] **7.3** Add "New Bug" button + form
   - Wire to Create Bug API
-- [ ] **6.4** Add status dropdown per row
+- [ ] **7.4** Add status dropdown per row
   - Wire to Update Bug API
 
 ---
 
-## Stage 7: Filtering, Search, Count
+## Stage 8: Filtering, Search, Count
 
-- [ ] **7.1** Extend "Get all bugs" endpoint (backend)
+- [ ] **8.1** Extend "Get all bugs" endpoint (backend)
   - Accept filter query params: variant, impact, status, reporter, responsible, fixedBuild
-- [ ] **7.2** Add title/description search param (backend)
-- [ ] **7.3** Build filter bar UI (frontend)
+- [ ] **8.2** Add title/description search param (backend)
+- [ ] **8.3** Build filter bar UI (frontend)
   - Dropdowns for each filter field
-- [ ] **7.4** Build search box (frontend)
+- [ ] **8.4** Build search box (frontend)
   - Wire both to API call
-- [ ] **7.5** Add count section at top
+- [ ] **8.5** Add count section at top
   - Shows count of currently filtered results
 
 ---
 
-## Stage 8: Deployment
+## Stage 9: Deployment
 
-- [ ] **8.1** Create Azure App Service (F1) resource
+- [ ] **9.1** Create Azure App Service (F1) resource
   - Deploy backend
-- [ ] **8.2** Update backend CORS settings
+- [ ] **9.2** Update backend CORS settings
   - Allow frontend domain
-- [ ] **8.3** Create Azure Static Web App resource
+- [ ] **9.3** Create Azure Static Web App resource
   - Deploy frontend
-- [ ] **8.4** Update frontend API base URL
+- [ ] **9.4** Update frontend API base URL
   - Point to deployed backend
-- [ ] **8.5** Test end-to-end on deployed URLs
+- [ ] **9.5** Test end-to-end on deployed URLs
 
 ---
 
-## Stage 9: Polish
+## Stage 10: Polish
 
-- [ ] **9.1** Add form validation
+- [ ] **10.1** Add form validation
   - Required fields, max lengths
-- [ ] **9.2** Add basic error handling/toasts
+- [ ] **10.2** Add basic error handling/toasts
   - On API failures
-- [ ] **9.3** Add loading states/spinners
-- [ ] **9.4** Clean up UI styling
-- [ ] **9.5** Write a short README
+- [ ] **10.3** Add loading states/spinners
+- [ ] **10.4** Clean up UI styling
+- [ ] **10.5** Write a short README
   - Setup + run instructions
 
 ---
