@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Bug Tracker — Login / Signup</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/feather-icons/4.29.0/feather.min.js"></script>
+<style>
+  :root {
+    --bg: #F5F5F2;
+    --surface: #FFFFFF;
+    --border: #E4E4E1;
+    --ink: #1C1E21;
+    --ink-soft: #6B6E73;
+    --accent: #3B4B6B;
+    --accent-light: #5D7099;
+    --accent-soft: #EEF1F6;
+    --danger: #DC2626;
+  }
+  * { box-sizing: border-box; }
+  html, body { height: 100%; margin: 0; }
+  body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: 'IBM Plex Sans', sans-serif;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .mono { font-family: 'IBM Plex Mono', monospace; }
+
+  .wrap { width: 380px; }
+
+  .brand { display: flex; align-items: center; justify-content: center; gap: 8px; margin-bottom: 22px; }
+  .brand svg { width: 22px; height: 22px; color: var(--accent); }
+  .brand span { font-size: 17px; font-weight: 700; }
+
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 8px;
+    box-shadow: 0 1px 3px rgba(20,20,20,0.04);
+  }
+
+  .tabs { display: flex; background: #F0F0EE; border-radius: 8px; padding: 4px; margin-bottom: 20px; }
+  .tab {
+    flex: 1; text-align: center; padding: 8px 0; border-radius: 6px;
+    font-weight: 600; font-size: 13.5px; cursor: pointer; color: var(--ink-soft);
+    transition: all 0.15s;
+  }
+  .tab.active { background: var(--surface); color: var(--accent); box-shadow: 0 1px 2px rgba(0,0,0,0.06); }
+
+  .panel { padding: 4px 18px 20px; }
+  .panel h2 { font-size: 17px; margin: 0 0 4px; }
+  .panel .sub { font-size: 12.5px; color: var(--ink-soft); margin-bottom: 20px; }
+
+  .field { margin-bottom: 14px; }
+  .field label { display: block; font-size: 12.5px; font-weight: 600; margin-bottom: 6px; color: var(--ink); }
+  .input-wrap { position: relative; }
+  .input-wrap svg { position: absolute; left: 11px; top: 50%; transform: translateY(-50%); width: 15px; height: 15px; color: var(--ink-soft); }
+  .input-wrap input {
+    width: 100%; border: 1px solid var(--border); border-radius: 7px;
+    padding: 9px 12px 9px 34px; font-size: 13.5px; font-family: inherit; color: var(--ink);
+  }
+  .input-wrap input:focus { outline: 2px solid var(--accent); outline-offset: 1px; border-color: var(--accent); }
+  .input-wrap input.has-toggle { padding-right: 36px; }
+  .pw-toggle { position: absolute; right: 10px; top: 50%; transform: translateY(-50%); background: none; border: none; padding: 2px; cursor: pointer; color: var(--ink-soft); display: flex; }
+  .pw-toggle:hover { color: var(--ink); }
+  .pw-toggle svg { width: 15px; height: 15px; }
+
+  .hint { font-size: 11.5px; color: var(--ink-soft); margin-top: 5px; }
+  .error-text { font-size: 11.5px; color: var(--danger); margin-top: 5px; display: none; }
+
+  .btn-primary {
+    width: 100%; background: var(--accent); color: white; border: none;
+    border-radius: 7px; padding: 10px 0; font-weight: 600; font-size: 13.5px;
+    cursor: pointer; margin-top: 4px; box-shadow: 0 1px 2px rgba(59,75,107,0.25);
+  }
+  .btn-primary:hover { background: #2E3B54; }
+
+  .switch-line { text-align: center; font-size: 12.5px; color: var(--ink-soft); margin-top: 16px; }
+  .switch-line a { color: var(--accent); font-weight: 600; text-decoration: none; cursor: pointer; }
+  .switch-line a:hover { text-decoration: underline; }
+
+  .footnote { text-align: center; font-size: 11.5px; color: var(--ink-soft); margin-top: 18px; }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <div class="brand">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 2v4M16 2v4M3 10h18M8 14h.01M12 14h.01M16 14h.01M8 18h.01M12 18h.01"/><rect x="3" y="6" width="18" height="15" rx="2"/></svg>
+    <span>Bug Tracker</span>
+  </div>
+
+  <div class="card">
+    <div class="tabs">
+      <div class="tab active" id="tabLogin" onclick="showPanel('login')">Log In</div>
+      <div class="tab" id="tabSignup" onclick="showPanel('signup')">Sign Up</div>
+    </div>
+
+    <!-- LOGIN -->
+    <div class="panel" id="panelLogin">
+      <h2>Welcome back</h2>
+      <div class="sub">Log in to view and manage bugs.</div>
+
+      <div class="field">
+        <label>Username</label>
+        <div class="input-wrap">
+          <i data-feather="user"></i>
+          <input type="text" placeholder="e.g. sreejith">
+        </div>
+      </div>
+
+      <div class="field">
+        <label>Password</label>
+        <div class="input-wrap">
+          <i data-feather="lock"></i>
+          <input type="password" class="has-toggle" id="loginPw" placeholder="••••••••">
+          <button type="button" class="pw-toggle" onclick="togglePw('loginPw', this)"><i data-feather="eye"></i></button>
+        </div>
+        <div class="error-text" id="loginError">Incorrect username or password.</div>
+      </div>
+
+      <button class="btn-primary" onclick="fakeSubmit('loginError')">Log In</button>
+
+      <div class="switch-line">Don't have an account? <a onclick="showPanel('signup')">Sign up</a></div>
+    </div>
+
+    <!-- SIGNUP -->
+    <div class="panel" id="panelSignup" style="display:none">
+      <h2>Create an account</h2>
+      <div class="sub">Join your team's bug tracker.</div>
+
+      <div class="field">
+        <label>Name</label>
+        <div class="input-wrap">
+          <i data-feather="user"></i>
+          <input type="text" placeholder="e.g. Sreejith Kumar">
+        </div>
+      </div>
+
+      <div class="field">
+        <label>Username</label>
+        <div class="input-wrap">
+          <i data-feather="at-sign"></i>
+          <input type="text" placeholder="Choose a username">
+        </div>
+        <div class="hint">Letters, numbers, and underscores only.</div>
+      </div>
+
+      <div class="field">
+        <label>Password</label>
+        <div class="input-wrap">
+          <i data-feather="lock"></i>
+          <input type="password" class="has-toggle" id="signupPw" placeholder="Create a password">
+          <button type="button" class="pw-toggle" onclick="togglePw('signupPw', this)"><i data-feather="eye"></i></button>
+        </div>
+      </div>
+
+      <div class="field">
+        <label>Confirm Password</label>
+        <div class="input-wrap">
+          <i data-feather="lock"></i>
+          <input type="password" class="has-toggle" id="signupPwConfirm" placeholder="Re-enter password">
+          <button type="button" class="pw-toggle" onclick="togglePw('signupPwConfirm', this)"><i data-feather="eye"></i></button>
+        </div>
+        <div class="error-text" id="signupError">Passwords don't match.</div>
+      </div>
+
+      <button class="btn-primary" onclick="fakeSubmit('signupError')">Create Account</button>
+
+      <div class="switch-line">Already have an account? <a onclick="showPanel('login')">Log in</a></div>
+    </div>
+  </div>
+
+  <div class="footnote">Internal tool — access limited to team members</div>
+</div>
+
+<script>
+function showPanel(name) {
+  document.getElementById('panelLogin').style.display = name === 'login' ? 'block' : 'none';
+  document.getElementById('panelSignup').style.display = name === 'signup' ? 'block' : 'none';
+  document.getElementById('tabLogin').classList.toggle('active', name === 'login');
+  document.getElementById('tabSignup').classList.toggle('active', name === 'signup');
+}
+function togglePw(inputId, btn) {
+  const input = document.getElementById(inputId);
+  const isPw = input.type === "password";
+  input.type = isPw ? "text" : "password";
+  btn.innerHTML = `<i data-feather="${isPw ? 'eye-off' : 'eye'}"></i>`;
+  feather.replace();
+}
+
+// Demo only: toggles an example error state so you can see how it looks.
+function fakeSubmit(errorId) {
+  const el = document.getElementById(errorId);
+  el.style.display = el.style.display === 'block' ? 'none' : 'block';
+}
+feather.replace();
+</script>
+
+</body>
+</html>

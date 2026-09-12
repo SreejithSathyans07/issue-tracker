@@ -1,0 +1,133 @@
+<div class="wrap">
+  <div class="brand">
+    <app-icon name="clipboard" [size]="22" />
+    <span>Bug Tracker</span>
+  </div>
+
+  <div class="card">
+    <div class="tabs">
+      <div class="tab" [class.active]="activeTab() === 'login'" (click)="switchTab('login')">Log In</div>
+      <div class="tab" [class.active]="activeTab() === 'signup'" (click)="switchTab('signup')">Sign Up</div>
+    </div>
+
+    <!-- LOGIN -->
+    @if (activeTab() === 'login') {
+      <form class="panel" [formGroup]="loginForm" (ngSubmit)="submitLogin()">
+        <h2>Welcome back</h2>
+        <div class="sub">Log in to view and manage bugs.</div>
+
+        <div class="field">
+          <label>Username</label>
+          <div class="input-wrap">
+            <app-icon name="user" />
+            <input type="text" formControlName="username" placeholder="e.g. sreejith">
+          </div>
+        </div>
+
+        <div class="field">
+          <label>Password</label>
+          <div class="input-wrap">
+            <app-icon name="lock" />
+            <input
+              [type]="showLoginPw() ? 'text' : 'password'"
+              class="has-toggle"
+              formControlName="password"
+              placeholder="••••••••"
+            >
+            <button type="button" class="pw-toggle" (click)="showLoginPw.set(!showLoginPw())">
+              <app-icon [name]="showLoginPw() ? 'eye-off' : 'eye'" />
+            </button>
+          </div>
+        </div>
+
+        @if (loginError()) {
+          <div class="callout callout-error">
+            <app-icon name="alert-circle" [size]="16" />
+            <span>{{ loginError() }}</span>
+          </div>
+        }
+
+        <button type="submit" class="btn-primary">Log In</button>
+
+        <div class="switch-line">Don't have an account? <a (click)="switchTab('signup')">Sign up</a></div>
+      </form>
+    }
+
+    <!-- SIGNUP -->
+    @if (activeTab() === 'signup') {
+      <form class="panel" [formGroup]="signupForm" (ngSubmit)="submitSignup()">
+        <h2>Create an account</h2>
+        <div class="sub">Join your team's bug tracker.</div>
+
+        <div class="field">
+          <label>Name</label>
+          <div class="input-wrap">
+            <app-icon name="user" />
+            <input type="text" formControlName="name" placeholder="e.g. Sreejith Kumar">
+          </div>
+        </div>
+
+        <div class="field">
+          <label>Username</label>
+          <div class="input-wrap">
+            <app-icon name="at-sign" />
+            <input type="text" formControlName="username" placeholder="Choose a username">
+          </div>
+          <div class="hint">Letters, numbers, and underscores only.</div>
+        </div>
+
+        <div class="field">
+          <label>Password</label>
+          <div class="input-wrap">
+            <app-icon name="lock" />
+            <input
+              [type]="showSignupPw() ? 'text' : 'password'"
+              class="has-toggle"
+              formControlName="password"
+              placeholder="Create a password"
+            >
+            <button type="button" class="pw-toggle" (click)="showSignupPw.set(!showSignupPw())">
+              <app-icon [name]="showSignupPw() ? 'eye-off' : 'eye'" />
+            </button>
+          </div>
+          <div class="hint">At least 6 characters.</div>
+        </div>
+
+        <div class="field">
+          <label>Confirm Password</label>
+          <div class="input-wrap">
+            <app-icon name="lock" />
+            <input
+              [type]="showSignupConfirmPw() ? 'text' : 'password'"
+              class="has-toggle"
+              formControlName="confirmPassword"
+              placeholder="Re-enter password"
+            >
+            <button type="button" class="pw-toggle" (click)="showSignupConfirmPw.set(!showSignupConfirmPw())">
+              <app-icon [name]="showSignupConfirmPw() ? 'eye-off' : 'eye'" />
+            </button>
+          </div>
+        </div>
+
+        @if (signupError()) {
+          <div class="callout callout-error">
+            <app-icon name="alert-circle" [size]="16" />
+            <span>{{ signupError() }}</span>
+          </div>
+        }
+        @if (signupSuccess()) {
+          <div class="callout callout-success">
+            <app-icon name="check-circle" [size]="16" />
+            <span>Account created! You can now log in.</span>
+          </div>
+        }
+
+        <button type="submit" class="btn-primary">Create Account</button>
+
+        <div class="switch-line">Already have an account? <a (click)="switchTab('login')">Log in</a></div>
+      </form>
+    }
+  </div>
+
+  <div class="footnote">Internal tool — access limited to team members</div>
+</div>

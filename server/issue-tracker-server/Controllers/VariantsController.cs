@@ -23,7 +23,7 @@ public class VariantsController : ControllerBase
     public async Task<ActionResult<List<LookupItemResponse>>> GetAll()
     {
         var variants = await _db.Variants
-            .Select(v => new LookupItemResponse { Id = v.Id, Name = v.Name })
+            .Select(v => new LookupItemResponse { Id = v.Id, Name = v.Name }) 
             .ToListAsync();
 
         return Ok(variants);

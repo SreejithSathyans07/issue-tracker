@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Bug Tracker — UI Mockup v3</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/feather-icons/4.29.0/feather.min.js"></script>
+<style>
+  :root {
+    --bg: #F5F5F2;
+    --surface: #FFFFFF;
+    --border: #E4E4E1;
+    --ink: #1C1E21;
+    --ink-soft: #6B6E73;
+    --accent: #3B4B6B;
+    --accent-light: #5D7099;
+    --accent-soft: #EEF1F6;
+
+    --status-open: #2563EB;
+    --status-inprogress: #D97706;
+    --status-intest: #7C3AED;
+    --status-resolved: #059669;
+    --status-closed: #6B7280;
+    --status-onhold: #B45309;
+    --status-needssupport: #DC2626;
+    --status-notissue: #9CA3AF;
+
+    --impact-cosmetic: #9CA3AF;
+    --impact-minor: #3B82F6;
+    --impact-major: #F59E0B;
+    --impact-critical: #EF4444;
+    --impact-blocker: #7F1D1D;
+  }
+
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--ink); font-family: 'IBM Plex Sans', sans-serif; font-size: 14px; }
+  .mono { font-family: 'IBM Plex Mono', monospace; }
+  svg.icon { width: 14px; height: 14px; vertical-align: -3px; }
+
+  .topbar {
+    padding: 18px 28px 16px;
+    background: var(--surface);
+    border-bottom: 3px solid transparent;
+    border-image: linear-gradient(90deg, var(--accent), var(--accent-light) 40%, transparent) 1;
+    display: flex; align-items: flex-start; justify-content: space-between;
+  }
+  .topbar h1 { font-size: 19px; font-weight: 700; margin: 0; letter-spacing: -0.01em; }
+  .topbar .subtitle { font-size: 12.5px; color: var(--ink-soft); margin-top: 3px; }
+  .topbar .right { display: flex; gap: 10px; align-items: center; }
+
+  .variant-pill {
+    display: flex; align-items: center; gap: 7px;
+    border: 1.5px solid var(--accent); border-radius: 20px;
+    padding: 6px 12px; background: var(--accent-soft); color: var(--accent);
+  }
+  .variant-pill select {
+    border: none; background: transparent; color: var(--accent);
+    font-weight: 600; font-size: 13px; padding: 0;
+  }
+  .variant-pill svg { width: 14px; height: 14px; }
+
+  .profile-chip { display: flex; align-items: center; gap: 8px; cursor: pointer; padding: 5px 10px 5px 5px; border-radius: 20px; border: 1px solid var(--border); position: relative; }
+  .profile-chip:hover { background: var(--accent-soft); }
+  .profile-avatar { width: 28px; height: 28px; border-radius: 50%; background: var(--accent); color: white; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700; flex-shrink: 0; }
+  .profile-name { font-size: 13px; font-weight: 600; line-height: 1.1; }
+  .profile-role { font-size: 10.5px; color: var(--ink-soft); }
+  .profile-chip svg.chev { width: 13px; height: 13px; color: var(--ink-soft); }
+  .profile-menu { display: none; position: absolute; top: calc(100% + 8px); right: 0; background: var(--surface); border: 1px solid var(--border); border-radius: 8px; box-shadow: 0 6px 18px rgba(0,0,0,0.1); min-width: 160px; z-index: 30; overflow: hidden; }
+  .profile-menu.open { display: block; }
+  .profile-menu a { display: flex; align-items: center; gap: 8px; padding: 10px 14px; font-size: 13px; color: var(--ink); text-decoration: none; }
+  .profile-menu a:hover { background: var(--accent-soft); }
+  .profile-menu a svg { width: 14px; height: 14px; color: var(--ink-soft); }
+  .profile-menu .divider { height: 1px; background: var(--border); }
+
+  select, input, button { font-family: inherit; font-size: 13px; border: 1px solid var(--border); background: var(--surface); border-radius: 7px; padding: 7px 11px; color: var(--ink); }
+  select:focus, input:focus, button:focus { outline: 2px solid var(--accent); outline-offset: 1px; }
+
+  .btn-primary, .btn-ghost { display: inline-flex; align-items: center; gap: 6px; font-weight: 500; cursor: pointer; }
+  .btn-primary { background: var(--accent); color: white; border: none; box-shadow: 0 1px 2px rgba(59,75,107,0.25); }
+  .btn-primary:hover { background: #2E3B54; box-shadow: 0 2px 6px rgba(59,75,107,0.35); }
+  .btn-ghost { background: var(--surface); color: var(--ink-soft); border: 1px solid var(--border); }
+  .btn-ghost:hover { background: #F0F0EE; color: var(--ink); }
+  .btn-primary svg, .btn-ghost svg { width: 14px; height: 14px; }
+
+  .container { padding: 20px 28px 40px; max-width: 1400px; margin: 0 auto; }
+
+  /* --- Distribution summary --- */
+  .summary {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 14px 18px;
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    box-shadow: 0 1px 3px rgba(20,20,20,0.03);
+  }
+  .summary .total { display: flex; flex-direction: column; min-width: 78px; border-right: 1px solid var(--border); padding-right: 18px; }
+  .summary .total .num { font-family: 'IBM Plex Mono', monospace; font-size: 24px; font-weight: 700; color: var(--accent); }
+  .summary .total .lbl { font-size: 11px; color: var(--ink-soft); margin-top: 1px; }
+  .summary .bar-wrap { flex: 1; }
+  .dist-bar { display: flex; height: 10px; border-radius: 5px; overflow: hidden; background: #F0F0EE; margin-bottom: 9px; }
+  .dist-bar .seg { height: 100%; transition: width 0.25s ease; }
+  .dist-legend { display: flex; flex-wrap: wrap; gap: 14px; }
+  .dist-legend .item { display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--ink-soft); }
+  .dist-legend .item .num { font-family: 'IBM Plex Mono', monospace; font-weight: 600; color: var(--ink); }
+  .dist-legend .swatch { width: 8px; height: 8px; border-radius: 2px; }
+
+  /* --- Filter bar --- */
+  .filter-bar { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 10px 12px; display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 16px; align-items: center; box-shadow: 0 1px 3px rgba(20,20,20,0.03); }
+  .filter-bar input[type="text"] { width: 180px; }
+  .filter-bar .right-actions { display: flex; gap: 8px; margin-left: auto; }
+
+  .ms { position: relative; }
+  .ms-btn { display: flex; align-items: center; gap: 6px; cursor: pointer; white-space: nowrap; }
+  .ms-btn .count { background: var(--accent-soft); color: var(--accent); border-radius: 10px; padding: 0 6px; font-size: 11px; font-weight: 700; }
+  .ms-panel { display: none; position: absolute; top: calc(100% + 6px); left: 0; background: var(--surface); border: 1px solid var(--border); border-radius: 8px; box-shadow: 0 6px 18px rgba(0,0,0,0.1); padding: 8px; min-width: 170px; z-index: 20; max-height: 220px; overflow-y: auto; }
+  .ms-panel.open { display: block; }
+  .ms-panel label { display: flex; align-items: center; gap: 7px; padding: 5px 6px; border-radius: 5px; font-size: 13px; cursor: pointer; }
+  .ms-panel label:hover { background: var(--accent-soft); }
+  .ms-panel input[type="checkbox"] { border: none; padding: 0; width: 14px; height: 14px; }
+
+  /* --- Table --- */
+  table { width: 100%; border-collapse: collapse; background: var(--surface); border: 1px solid var(--border); border-radius: 10px; overflow: hidden; box-shadow: 0 1px 3px rgba(20,20,20,0.03); }
+  thead th { position: sticky; top: 0; background: #FAFAF9; text-align: left; padding: 11px 12px; font-size: 11px; font-weight: 700; letter-spacing: 0.02em; color: var(--ink-soft); border-bottom: 1px solid var(--border); white-space: nowrap; }
+  tbody td { padding: 11px 12px; border-bottom: 1px solid var(--border); vertical-align: top; }
+  tbody tr:last-child td { border-bottom: none; }
+  tbody tr { border-left: 3px solid transparent; }
+  tbody tr:hover { background: var(--accent-soft); }
+  tbody tr.sev-high { border-left-color: var(--impact-critical); }
+  tbody tr.sev-blocker { border-left-color: var(--impact-blocker); }
+
+  .bug-id { color: var(--ink-soft); }
+  .bug-title { font-weight: 600; }
+  .bug-desc { color: var(--ink-soft); font-size: 12.5px; max-width: 260px; }
+  .expected-behavior { color: var(--ink-soft); font-size: 12.5px; max-width: 220px; }
+
+  .pill { display: inline-flex; align-items: center; gap: 5px; padding: 3px 10px; border-radius: 20px; font-size: 12px; font-weight: 500; background: #F3F3F1; white-space: nowrap; }
+
+  .empty-state { text-align: center; padding: 60px 20px; color: var(--ink-soft); }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div>
+    <h1>Bug Tracker</h1>
+    <div class="subtitle">Track and resolve issues across every build variant</div>
+  </div>
+  <div class="right">
+    <div class="variant-pill">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2 2 7l10 5 10-5-10-5Z"/><path d="m2 17 10 5 10-5"/><path d="m2 12 10 5 10-5"/></svg>
+      <select id="variantSelect">
+        <option value="ALL">All Variants</option>
+        <option value="DE">DE</option>
+        <option value="AT">AT</option>
+        <option value="FR">FR</option>
+        <option value="DELF7">DELF7</option>
+      </select>
+    </div>
+    <button class="btn-primary"><i data-feather="plus"></i>New Bug</button>
+
+    <div class="profile-chip" id="profileChip">
+      <div class="profile-avatar">SJ</div>
+      <div>
+        <div class="profile-name">Sreejith</div>
+        <div class="profile-role">Developer</div>
+      </div>
+      <i data-feather="chevron-down" class="chev"></i>
+      <div class="profile-menu" id="profileMenu">
+        <a href="#"><i data-feather="user"></i>My Profile</a>
+        <a href="#"><i data-feather="settings"></i>Admin Settings</a>
+        <div class="divider"></div>
+        <a href="#"><i data-feather="log-out"></i>Log Out</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="container">
+
+  <div class="summary" id="summary"></div>
+
+  <div class="filter-bar" id="filterBar">
+    <input type="text" id="searchBox" placeholder="Search title/desc...">
+    <!-- multiselects injected here -->
+    <div class="right-actions">
+      <button class="btn-ghost" onclick="clearFilters()"><i data-feather="x"></i>Clear</button>
+      <button class="btn-primary" onclick="applySearch()"><i data-feather="search"></i>Search</button>
+    </div>
+  </div>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Bug ID</th>
+        <th>Title / Description</th>
+        <th>Expected Behavior</th>
+        <th>Affected Build</th>
+        <th>Impact</th>
+        <th>Status</th>
+        <th>Reporter</th>
+        <th>Responsible</th>
+        <th>Fixed Build</th>
+      </tr>
+    </thead>
+    <tbody id="tableBody"></tbody>
+  </table>
+
+</div>
+
+<script>
+const STATUS_META = {
+  "Open": { color: "var(--status-open)", icon: "circle" },
+  "In Progress": { color: "var(--status-inprogress)", icon: "refresh-cw" },
+  "In Test": { color: "var(--status-intest)", icon: "activity" },
+  "Resolved": { color: "var(--status-resolved)", icon: "check-circle" },
+  "Closed": { color: "var(--status-closed)", icon: "x-circle" },
+  "On Hold": { color: "var(--status-onhold)", icon: "pause-circle" },
+  "Needs Support": { color: "var(--status-needssupport)", icon: "life-buoy" },
+  "Not an issue": { color: "var(--status-notissue)", icon: "slash" }
+};
+const IMPACT_META = {
+  "Cosmetic": { color: "var(--impact-cosmetic)", icon: "eye" },
+  "Minor": { color: "var(--impact-minor)", icon: "alert-circle" },
+  "Major": { color: "var(--impact-major)", icon: "alert-triangle" },
+  "Critical": { color: "var(--impact-critical)", icon: "zap" },
+  "Blocker": { color: "var(--impact-blocker)", icon: "alert-octagon" }
+};
+
+const bugs = [
+  {id:"BUG-1042", title:"Login button unresponsive on Safari", desc:"Clicking login does nothing on Safari 17, works fine on Chrome.", expected:"Clicking Login should navigate to the dashboard.", variant:"DE", build:"2.4.1", impact:"Major", status:"Open", reporter:"Meera", responsible:"Arjun", fixedBuild:"—"},
+  {id:"BUG-1041", title:"Crash on export to PDF", desc:"App crashes when exporting reports larger than 50 rows.", expected:"Export should complete and download the PDF.", variant:"FR", build:"2.4.0", impact:"Blocker", status:"In Progress", reporter:"Thomas", responsible:"Sreejith", fixedBuild:"—"},
+  {id:"BUG-1039", title:"Misaligned footer on mobile", desc:"Footer overlaps content on screens < 380px wide.", expected:"Footer should stack cleanly below content on small screens.", variant:"AT", build:"2.3.9", impact:"Cosmetic", status:"Resolved", reporter:"Lena", responsible:"Nithin", fixedBuild:"2.4.0"},
+  {id:"BUG-1038", title:"Incorrect tax calculation", desc:"Tax shown 2% lower than expected for DELF7 region.", expected:"Tax should match the configured DELF7 rate exactly.", variant:"DELF7", build:"2.3.8", impact:"Critical", status:"In Test", reporter:"Sreejith", responsible:"Meera", fixedBuild:"2.4.1"},
+  {id:"BUG-1035", title:"Search filter not clearing", desc:"Search field text persists after clicking Clear.", expected:"Clear should empty the search box along with all filters.", variant:"DE", build:"2.3.7", impact:"Minor", status:"Open", reporter:"Arjun", responsible:"Lena", fixedBuild:"—"},
+  {id:"BUG-1033", title:"Duplicate email on signup", desc:"No validation error shown when signing up with existing email.", expected:"Should show an inline error for a duplicate username.", variant:"FR", build:"2.3.6", impact:"Major", status:"On Hold", reporter:"Nithin", responsible:"Thomas", fixedBuild:"—"},
+  {id:"BUG-1030", title:"Dashboard loads slowly", desc:"Initial load takes 8+ seconds with 200+ bugs.", expected:"Dashboard should load in under 2 seconds.", variant:"AT", build:"2.3.5", impact:"Major", status:"Needs Support", reporter:"Lena", responsible:"Sreejith", fixedBuild:"—"},
+  {id:"BUG-1028", title:"Dark mode toggle resets on refresh", desc:"User preference not persisted between sessions.", expected:"Selected theme should persist after a page refresh.", variant:"DE", build:"2.3.4", impact:"Minor", status:"Closed", reporter:"Meera", responsible:"Nithin", fixedBuild:"2.3.5"},
+  {id:"BUG-1025", title:"Wrong currency symbol", desc:"Shows $ instead of € for DELF7 invoices.", expected:"Should display € for all DELF7 region invoices.", variant:"DELF7", build:"2.3.2", impact:"Major", status:"Resolved", reporter:"Thomas", responsible:"Arjun", fixedBuild:"2.3.4"},
+  {id:"BUG-1021", title:"Status change not saving", desc:"Reported by a user but couldn't reproduce.", expected:"Status dropdown change should persist on save.", variant:"FR", build:"2.3.0", impact:"Minor", status:"Not an issue", reporter:"Arjun", responsible:"Meera", fixedBuild:"—"},
+];
+
+function uniq(arr) { return [...new Set(arr)]; }
+
+// ---- Multiselect component ----
+const multiselects = {};
+function createMultiselect(key, label, options) {
+  const wrap = document.createElement("div");
+  wrap.className = "ms";
+  const btn = document.createElement("button");
+  btn.className = "ms-btn";
+  btn.innerHTML = `<i data-feather="chevron-down" style="width:12px;height:12px"></i>${label}`;
+  const panel = document.createElement("div");
+  panel.className = "ms-panel";
+  options.forEach(opt => {
+    panel.innerHTML += `<label><input type="checkbox" value="${opt}" data-key="${key}">${opt}</label>`;
+  });
+  wrap.appendChild(btn);
+  wrap.appendChild(panel);
+  btn.addEventListener("click", (e) => {
+    e.stopPropagation();
+    document.querySelectorAll(".ms-panel.open").forEach(p => { if (p !== panel) p.classList.remove("open"); });
+    panel.classList.toggle("open");
+  });
+  panel.addEventListener("change", () => updateMsLabel(key));
+  multiselects[key] = { wrap, panel, label, btn };
+  return wrap;
+}
+function updateMsLabel(key) {
+  const ms = multiselects[key];
+  const checked = ms.panel.querySelectorAll("input:checked").length;
+  ms.btn.innerHTML = `<i data-feather="chevron-down" style="width:12px;height:12px"></i>${ms.label}${checked ? ` <span class="count">${checked}</span>` : ""}`;
+  feather.replace();
+}
+function getSelected(key) {
+  return [...multiselects[key].panel.querySelectorAll("input:checked")].map(i => i.value);
+}
+document.addEventListener("click", () => {
+  document.querySelectorAll(".ms-panel.open").forEach(p => p.classList.remove("open"));
+});
+
+const filterBar = document.getElementById("filterBar");
+const rightActions = filterBar.querySelector(".right-actions");
+filterBar.insertBefore(createMultiselect("impact", "Impact", uniq(bugs.map(b=>b.impact))), rightActions);
+filterBar.insertBefore(createMultiselect("status", "Status", uniq(bugs.map(b=>b.status))), rightActions);
+filterBar.insertBefore(createMultiselect("reporter", "Reporter", uniq(bugs.map(b=>b.reporter))), rightActions);
+filterBar.insertBefore(createMultiselect("responsible", "Responsible", uniq(bugs.map(b=>b.responsible))), rightActions);
+filterBar.insertBefore(createMultiselect("build", "Affected Build", uniq(bugs.map(b=>b.build))), rightActions);
+
+function pill(text, meta) {
+  return `<span class="pill"><i data-feather="${meta.icon}" class="icon" style="color:${meta.color}"></i>${text}</span>`;
+}
+
+let currentFiltered = bugs;
+
+function applySearch() {
+  const variant = document.getElementById("variantSelect").value;
+  const search = document.getElementById("searchBox").value.toLowerCase();
+  const impact = getSelected("impact");
+  const status = getSelected("status");
+  const reporter = getSelected("reporter");
+  const responsible = getSelected("responsible");
+  const build = getSelected("build");
+
+  currentFiltered = bugs.filter(b =>
+    (variant === "ALL" || b.variant === variant) &&
+    (impact.length === 0 || impact.includes(b.impact)) &&
+    (status.length === 0 || status.includes(b.status)) &&
+    (reporter.length === 0 || reporter.includes(b.reporter)) &&
+    (responsible.length === 0 || responsible.includes(b.responsible)) &&
+    (build.length === 0 || build.includes(b.build)) &&
+    (!search || b.title.toLowerCase().includes(search) || b.desc.toLowerCase().includes(search))
+  );
+  render();
+}
+
+function clearFilters() {
+  document.getElementById("variantSelect").value = "ALL";
+  document.getElementById("searchBox").value = "";
+  Object.keys(multiselects).forEach(key => {
+    multiselects[key].panel.querySelectorAll("input").forEach(i => i.checked = false);
+    updateMsLabel(key);
+  });
+  currentFiltered = bugs;
+  render();
+}
+
+function render() {
+  const summary = document.getElementById("summary");
+  const total = currentFiltered.length;
+  if (total === 0) {
+    summary.innerHTML = `<div class="total"><span class="num">0</span><span class="lbl">bugs shown</span></div><div class="bar-wrap" style="color:var(--ink-soft)">No bugs match current filters.</div>`;
+  } else {
+    const counts = Object.keys(STATUS_META).map(s => ({ s, n: currentFiltered.filter(b=>b.status===s).length })).filter(x => x.n > 0);
+    const segs = counts.map(c => `<div class="seg" style="width:${(c.n/total*100).toFixed(1)}%; background:${STATUS_META[c.s].color}" title="${c.s}: ${c.n}"></div>`).join("");
+    const legend = counts.map(c => `<div class="item"><span class="swatch" style="background:${STATUS_META[c.s].color}"></span>${c.s} <span class="num">${c.n}</span></div>`).join("");
+    summary.innerHTML = `
+      <div class="total"><span class="num">${total}</span><span class="lbl">bugs shown</span></div>
+      <div class="bar-wrap">
+        <div class="dist-bar">${segs}</div>
+        <div class="dist-legend">${legend}</div>
+      </div>`;
+  }
+
+  const body = document.getElementById("tableBody");
+  if (currentFiltered.length === 0) {
+    body.innerHTML = `<tr><td colspan="9"><div class="empty-state">No bugs match these filters.</div></td></tr>`;
+  } else {
+    body.innerHTML = currentFiltered.map(b => {
+      const sevClass = b.impact === "Blocker" ? "sev-blocker" : (b.impact === "Critical" ? "sev-high" : "");
+      return `
+      <tr class="${sevClass}">
+        <td class="bug-id mono">${b.id}</td>
+        <td><div class="bug-title">${b.title}</div><div class="bug-desc">${b.desc}</div></td>
+        <td class="expected-behavior">${b.expected}</td>
+        <td class="mono">${b.build}</td>
+        <td>${pill(b.impact, IMPACT_META[b.impact])}</td>
+        <td>${pill(b.status, STATUS_META[b.status])}</td>
+        <td>${b.reporter}</td>
+        <td>${b.responsible}</td>
+        <td class="mono">${b.fixedBuild}</td>
+      </tr>
+    `;
+    }).join("");
+  }
+  feather.replace();
+}
+
+document.getElementById("variantSelect").addEventListener("change", applySearch);
+
+document.getElementById("profileChip").addEventListener("click", (e) => {
+  e.stopPropagation();
+  document.getElementById("profileMenu").classList.toggle("open");
+});
+document.addEventListener("click", () => {
+  document.getElementById("profileMenu").classList.remove("open");
+});
+
+render();
+feather.replace();
+</script>
+
+</body>
+</html>
