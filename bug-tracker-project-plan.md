@@ -57,13 +57,13 @@
 
 ## Stage 4: Backend — Roles & Permissions (RBAC)
 
-- [ ] **4.1** Add `Role` (Admin/User) to User entity + migration
-- [ ] **4.2** Design Permissions model
+- [x] **4.1** Add `Role` (Admin/User) to User entity + migration
+- [x] **4.2** Design Permissions model
   - Roles: Admin (Reader, Writer, Administration), User (Reader, Writer)
 - [ ] **4.3** Add permission checks to relevant endpoints
   - e.g. only Administration permission can add/edit Impacts, Statuses, Variants
-- [ ] **4.4** Include role/permissions in JWT claims
-- [ ] **4.5** Test permission enforcement
+- [x] **4.4** Include role/permissions in JWT claims
+- [x] **4.5** Test permission enforcement
   - Via Swagger/Postman with different roles
 
 ---

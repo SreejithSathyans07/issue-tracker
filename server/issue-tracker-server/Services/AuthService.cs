@@ -98,12 +98,16 @@ public class AuthService : IAuthService
         var signingKey = _config["Jwt:SigningKey"]
             ?? throw new InvalidOperationException("Jwt:SigningKey is not configured.");
 
-        var claims = new[]
+        var claims = new List<Claim>
         {
-            new Claim(JwtRegisteredClaimNames.Sub, user.Id.ToString()),
-            new Claim(ClaimTypes.Name, user.Username),
-            new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
+            new(JwtRegisteredClaimNames.Sub, user.Id.ToString()),
+            new(ClaimTypes.Name, user.Username),
+            new(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+            new("role", user.Role.ToString())
         };
+
+        claims.AddRange(RolePermissions.For(user.Role)
+            .Select(permission => new Claim("permission", permission.ToString())));
 
         var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(signingKey));
         var credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
