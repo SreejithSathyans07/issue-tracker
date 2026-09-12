@@ -19,6 +19,10 @@ public class AppDbContext : DbContext
             .HasIndex(u => u.Username)
             .IsUnique();
 
+        modelBuilder.Entity<User>()
+            .Property(u => u.Role)
+            .HasConversion<string>();
+
         modelBuilder.Entity<Bug>()
             .HasOne(b => b.Reporter)
             .WithMany()
