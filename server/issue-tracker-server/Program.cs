@@ -17,6 +17,7 @@ builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddScoped<IBugService, BugService>();
 
 var jwtSigningKey = builder.Configuration["Jwt:SigningKey"]
     ?? throw new InvalidOperationException("Jwt:SigningKey is not configured.");
