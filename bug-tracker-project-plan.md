@@ -101,13 +101,14 @@ _(Skipped for now — will revisit once frontend auth (Stage 7) surfaces the nee
 
 ## Stage 7: Frontend — Auth Pages
 
-- [ ] **7.1** Create Login page + form
-- [ ] **7.2** Create Signup page + form
-- [ ] **7.3** Connect both to backend APIs
-- [ ] **7.4** Store JWT
-  - In memory or localStorage; redirect to landing page on success
-- [ ] **7.5** Add route guard
-  - Landing page requires login
+- [x] **7.1** Create Login page + form
+- [x] **7.2** Create Signup page + form
+- [x] **7.3** Connect both to backend APIs
+  - Also added backend CORS policy for the Angular dev origin (`localhost:4200`), fixing a preflight bug where `UseCors()` was called before `UseRouting()`
+- [x] **7.4** Store JWT
+  - Chose `localStorage` (see discussion — revisit alongside Stage 5 refresh tokens for the in-memory + httpOnly-cookie upgrade); redirects to `/bugs` on success via an HTTP interceptor that attaches the token to API requests
+- [x] **7.5** Add route guard
+  - `authGuard` protects `/bugs`, redirects to `/login` when not authenticated; verified with a placeholder landing component (full UI is Stage 8)
 
 ---
 

@@ -1,5 +1,6 @@
 import { Component, inject, signal } from '@angular/core';
 import { ReactiveFormsModule, FormBuilder, Validators, AbstractControl, ValidationErrors } from '@angular/forms';
+import { Router } from '@angular/router';
 import { Icon } from '../../shared/icon/icon';
 import { Auth as AuthService } from '../../core/auth';
 
@@ -18,6 +19,7 @@ function passwordsMatchValidator(control: AbstractControl): ValidationErrors | n
 export class AuthComponent {
   private fb = inject(FormBuilder);
   private authService = inject(AuthService);
+  private router = inject(Router);
 
   activeTab = signal<'login' | 'signup'>('login');
   showLoginPw = signal(false);
@@ -63,7 +65,7 @@ export class AuthComponent {
 
     this.authService.login({ username: username!, password: password! }).subscribe({
       next: () => {
-        // Redirect to the landing page is handled once the route exists (Stage 7.4/7.5).
+        this.router.navigate(['/bugs']);
       },
       error: () => {
         this.loginError.set('Incorrect username or password.');
