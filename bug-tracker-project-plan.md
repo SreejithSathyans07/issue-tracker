@@ -32,11 +32,11 @@
   - Apply the Free Offer
 - [x] **2.4** Get connection string
   - Test connection from local machine
-- [ ] **2.5** Install EF Core + SQL Server provider
+- [x] **2.5** Install EF Core + SQL Server provider
   - In the .NET project
-- [ ] **2.6** Create EF Core models
+- [x] **2.6** Create EF Core models
   - Matching the ER diagram
-- [ ] **2.7** Create DbContext
+- [x] **2.7** Create DbContext
   - Run first migration, verify tables appear in Azure SQL
 
 ---
