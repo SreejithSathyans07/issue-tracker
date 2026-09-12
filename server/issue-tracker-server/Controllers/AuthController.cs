@@ -34,4 +34,17 @@ public class AuthController : ControllerBase
 
         return CreatedAtAction(nameof(CheckUsername), new { username = user!.Username }, user);
     }
+
+    [HttpPost("login")]
+    public async Task<ActionResult<LoginResponse>> Login(LoginRequest request)
+    {
+        var (result, error) = await _authService.LoginAsync(request);
+
+        if (error != null)
+        {
+            return Unauthorized(error);
+        }
+
+        return Ok(result);
+    }
 }
