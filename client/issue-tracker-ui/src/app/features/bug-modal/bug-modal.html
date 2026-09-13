@@ -37,7 +37,12 @@
 
         <div class="field">
           <label>Affected Build <span class="req">*</span></label>
-          <input type="text" formControlName="affectedBuild" placeholder="e.g. 2.4.1">
+          <select formControlName="affectedBuildId">
+            <option [ngValue]="null" disabled>Select build</option>
+            @for (b of builds(); track b.id) {
+              <option [ngValue]="b.id">{{ b.name }}</option>
+            }
+          </select>
         </div>
 
         <div class="field">
@@ -108,7 +113,12 @@
         @if (isEdit) {
           <div class="field">
             <label>Fixed Build</label>
-            <input type="text" formControlName="fixedBuild" placeholder="— Not fixed yet —">
+            <select formControlName="fixedBuildId">
+              <option [ngValue]="null">— Not fixed yet —</option>
+              @for (b of builds(); track b.id) {
+                <option [ngValue]="b.id">{{ b.name }}</option>
+              }
+            </select>
           </div>
         }
 

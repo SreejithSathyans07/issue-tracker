@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Bug Tracker — Confirmation Dialog</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/feather-icons/4.29.0/feather.min.js"></script>
+<style>
+  :root {
+    --bg: #F5F5F2;
+    --surface: #FFFFFF;
+    --border: #E4E4E1;
+    --ink: #1C1E21;
+    --ink-soft: #6B6E73;
+    --accent: #3B4B6B;
+    --accent-soft: #EEF1F6;
+    --danger: #DC2626;
+    --danger-soft: #FDEDED;
+    --success: #059669;
+    --success-soft: #E8F5F0;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--ink); font-family: 'IBM Plex Sans', sans-serif; font-size: 14px; }
+
+  .fake-page { padding: 20px 28px; opacity: 0.4; filter: blur(1px); pointer-events: none; user-select: none; }
+  .fake-topbar { height: 56px; background: var(--surface); border-radius: 10px; margin-bottom: 16px; border: 1px solid var(--border); }
+  .fake-row { height: 44px; background: var(--surface); border: 1px solid var(--border); border-radius: 8px; margin-bottom: 8px; }
+
+  .demo-controls { position: fixed; top: 14px; left: 14px; z-index: 100; background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 6px; display: flex; gap: 6px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+  .demo-controls button { border: none; background: transparent; padding: 7px 12px; border-radius: 6px; font-family: inherit; font-size: 12.5px; font-weight: 600; cursor: pointer; color: var(--ink-soft); }
+  .demo-controls button.active { background: var(--accent); color: white; }
+
+  .overlay { position: fixed; inset: 0; background: rgba(20,22,25,0.45); display: flex; align-items: center; justify-content: center; z-index: 50; }
+  .dialog { width: 400px; max-width: 90vw; background: var(--surface); border-radius: 12px; box-shadow: 0 20px 50px rgba(0,0,0,0.25); padding: 24px 24px 20px; text-align: center; }
+
+  .dialog-icon { width: 48px; height: 48px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 16px; }
+  .dialog-icon svg { width: 24px; height: 24px; }
+
+  .dialog h2 { font-size: 16.5px; margin: 0 0 8px; }
+  .dialog p { font-size: 13px; color: var(--ink-soft); margin: 0 0 22px; line-height: 1.5; }
+
+  .dialog-actions { display: flex; gap: 10px; }
+  .btn-primary, .btn-ghost, .btn-danger { flex: 1; display: inline-flex; align-items: center; justify-content: center; gap: 6px; font-weight: 600; cursor: pointer; border-radius: 7px; padding: 10px 0; font-family: inherit; font-size: 13.5px; }
+  .btn-primary { background: var(--accent); color: white; border: none; box-shadow: 0 1px 2px rgba(59,75,107,0.25); }
+  .btn-primary:hover { background: #2E3B54; }
+  .btn-danger { background: var(--danger); color: white; border: none; box-shadow: 0 1px 2px rgba(220,38,38,0.25); }
+  .btn-danger:hover { background: #B91C1C; }
+  .btn-ghost { background: var(--surface); color: var(--ink); border: 1px solid var(--border); }
+  .btn-ghost:hover { background: #F0F0EE; }
+  .btn-primary svg, .btn-ghost svg, .btn-danger svg { width: 14px; height: 14px; }
+</style>
+</head>
+<body>
+
+<div class="demo-controls">
+  <button id="btnConfirm" class="active" onclick="setVariant('confirm')">Confirm</button>
+  <button id="btnDanger" onclick="setVariant('danger')">Danger</button>
+  <button id="btnSuccess" onclick="setVariant('success')">Success</button>
+</div>
+
+<div class="fake-page">
+  <div class="fake-topbar"></div>
+  <div class="fake-row"></div>
+  <div class="fake-row"></div>
+  <div class="fake-row"></div>
+</div>
+
+<div class="overlay">
+  <div class="dialog">
+    <div class="dialog-icon" id="dialogIcon"><i data-feather="help-circle"></i></div>
+    <h2 id="dialogTitle">Discard changes?</h2>
+    <p id="dialogMessage">You have unsaved changes to this bug. If you leave now, they'll be lost.</p>
+    <div class="dialog-actions">
+      <button class="btn-ghost">Cancel</button>
+      <button class="btn-primary" id="dialogOkBtn"><i data-feather="check"></i>OK</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const VARIANTS = {
+  confirm: {
+    icon: "help-circle", iconColor: "var(--accent)", iconBg: "var(--accent-soft)",
+    title: "Discard changes?",
+    message: "You have unsaved changes to this bug. If you leave now, they'll be lost.",
+    okClass: "btn-primary", okIcon: "check", okLabel: "OK"
+  },
+  danger: {
+    icon: "alert-triangle", iconColor: "var(--danger)", iconBg: "var(--danger-soft)",
+    title: "Delete this bug?",
+    message: "BUG-1042 will be permanently removed. This action can't be undone.",
+    okClass: "btn-danger", okIcon: "trash-2", okLabel: "Delete"
+  },
+  success: {
+    icon: "check-circle", iconColor: "var(--success)", iconBg: "var(--success-soft)",
+    title: "Mark as Resolved?",
+    message: "This will move the bug to Resolved status and notify the reporter.",
+    okClass: "btn-primary", okIcon: "check", okLabel: "OK"
+  }
+};
+
+function setVariant(key) {
+  document.getElementById('btnConfirm').classList.toggle('active', key === 'confirm');
+  document.getElementById('btnDanger').classList.toggle('active', key === 'danger');
+  document.getElementById('btnSuccess').classList.toggle('active', key === 'success');
+
+  const v = VARIANTS[key];
+  const iconEl = document.getElementById('dialogIcon');
+  iconEl.style.background = v.iconBg;
+  iconEl.style.color = v.iconColor;
+  iconEl.innerHTML = `<i data-feather="${v.icon}"></i>`;
+
+  document.getElementById('dialogTitle').textContent = v.title;
+  document.getElementById('dialogMessage').textContent = v.message;
+
+  const okBtn = document.getElementById('dialogOkBtn');
+  okBtn.className = v.okClass;
+  okBtn.innerHTML = `<i data-feather="${v.okIcon}"></i>${v.okLabel}`;
+
+  feather.replace();
+}
+
+setVariant('confirm');
+feather.replace();
+</script>
+
+</body>
+</html>

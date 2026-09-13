@@ -22,6 +22,7 @@ export class BugModal {
   variants = input<LookupItem[]>([]);
   impacts = input<LookupItem[]>([]);
   statuses = input<LookupItem[]>([]);
+  builds = input<LookupItem[]>([]);
   users = input<UserResponse[]>([]);
   reporterName = input<string>('');
 
@@ -37,11 +38,11 @@ export class BugModal {
     description: ['', Validators.required],
     expectedBehavior: [''],
     remarks: [''],
-    affectedBuild: ['', Validators.required],
+    affectedBuildId: [null as number | null, Validators.required],
     variantId: [null as number | null, Validators.required],
     impactId: [null as number | null, Validators.required],
     statusId: [null as number | null],
-    fixedBuild: [''],
+    fixedBuildId: [null as number | null],
     responsibleId: [null as number | null, Validators.required]
   });
 
@@ -55,6 +56,7 @@ export class BugModal {
       const statuses = this.statuses();
       const impacts = this.impacts();
       const variants = this.variants();
+      const builds = this.builds();
       const users = this.users();
 
       if (this.mode() === 'edit' && bug) {
@@ -64,11 +66,11 @@ export class BugModal {
             description: bug.description,
             expectedBehavior: bug.expectedBehavior ?? '',
             remarks: bug.remarks ?? '',
-            affectedBuild: bug.affectedBuild,
+            affectedBuildId: builds.find((b) => b.name === bug.affectedBuild)?.id ?? null,
             variantId: variants.find((v) => v.name === bug.variant)?.id ?? null,
             impactId: impacts.find((i) => i.name === bug.impact)?.id ?? null,
             statusId: statuses.find((s) => s.name === bug.status)?.id ?? null,
-            fixedBuild: bug.fixedBuild ?? '',
+            fixedBuildId: builds.find((b) => b.name === bug.fixedBuild)?.id ?? null,
             responsibleId: users.find((u) => u.name === bug.responsible)?.id ?? null
           },
           { emitEvent: false }
@@ -119,7 +121,7 @@ export class BugModal {
       const payload: CreateBugRequest = {
         title: v.title!,
         description: v.description!,
-        affectedBuild: v.affectedBuild!,
+        affectedBuildId: v.affectedBuildId!,
         expectedBehavior: v.expectedBehavior || null,
         remarks: v.remarks || null,
         variantId: v.variantId!,
@@ -138,13 +140,13 @@ export class BugModal {
       const payload: UpdateBugRequest = {
         title: v.title!,
         description: v.description!,
-        affectedBuild: v.affectedBuild!,
+        affectedBuildId: v.affectedBuildId!,
         expectedBehavior: v.expectedBehavior || null,
         remarks: v.remarks || null,
         variantId: v.variantId!,
         impactId: v.impactId!,
         statusId: v.statusId!,
-        fixedBuild: v.fixedBuild || null,
+        fixedBuildId: v.fixedBuildId ?? null,
         responsibleId: v.responsibleId!
       };
 

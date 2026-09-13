@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Bug Tracker — Admin Settings</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/feather-icons/4.29.0/feather.min.js"></script>
+<style>
+  :root {
+    --bg: #F5F5F2;
+    --surface: #FFFFFF;
+    --border: #E4E4E1;
+    --ink: #1C1E21;
+    --ink-soft: #6B6E73;
+    --accent: #3B4B6B;
+    --accent-light: #5D7099;
+    --accent-soft: #EEF1F6;
+    --danger: #DC2626;
+    --danger-soft: #FDEDED;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--ink); font-family: 'IBM Plex Sans', sans-serif; font-size: 14px; }
+  .mono { font-family: 'IBM Plex Mono', monospace; }
+
+  .topbar {
+    padding: 18px 28px 16px;
+    background: var(--surface);
+    border-bottom: 3px solid transparent;
+    border-image: linear-gradient(90deg, var(--accent), var(--accent-light) 40%, transparent) 1;
+    display: flex; align-items: flex-start; justify-content: space-between;
+  }
+  .topbar h1 { font-size: 19px; font-weight: 700; margin: 0; letter-spacing: -0.01em; }
+  .topbar .subtitle { font-size: 12.5px; color: var(--ink-soft); margin-top: 3px; }
+
+  .btn-ghost { display: inline-flex; align-items: center; gap: 6px; font-weight: 500; cursor: pointer; background: var(--surface); color: var(--ink-soft); border: 1px solid var(--border); border-radius: 7px; padding: 8px 14px; font-family: inherit; font-size: 13px; }
+  .btn-ghost:hover { background: #F0F0EE; color: var(--ink); }
+  .btn-ghost svg { width: 14px; height: 14px; }
+
+  .container { padding: 24px 28px 40px; max-width: 960px; margin: 0 auto; }
+
+  .tabs { display: flex; background: #ECECE9; border-radius: 9px; padding: 4px; margin-bottom: 22px; width: fit-content; flex-wrap: wrap; }
+  .tab { padding: 8px 16px; border-radius: 6px; font-weight: 600; font-size: 13px; cursor: pointer; color: var(--ink-soft); display: flex; align-items: center; gap: 7px; white-space: nowrap; }
+  .tab.active { background: var(--surface); color: var(--accent); box-shadow: 0 1px 2px rgba(0,0,0,0.06); }
+  .tab svg { width: 14px; height: 14px; }
+
+  .panel { display: none; }
+  .panel.active { display: block; }
+
+  .card { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 18px 20px; box-shadow: 0 1px 3px rgba(20,20,20,0.03); margin-bottom: 16px; }
+  .card h3 { font-size: 14px; margin: 0 0 3px; }
+  .card .desc { font-size: 12px; color: var(--ink-soft); margin-bottom: 16px; }
+
+  .add-row { display: flex; gap: 8px; margin-bottom: 18px; }
+  .add-row input, .add-row select { flex: 1; border: 1px solid var(--border); border-radius: 7px; padding: 9px 12px; font-family: inherit; font-size: 13.5px; }
+  .add-row input:focus, .add-row select:focus { outline: 2px solid var(--accent); outline-offset: 1px; }
+  .btn-primary { background: var(--accent); color: white; border: none; border-radius: 7px; padding: 9px 16px; font-weight: 600; font-size: 13.5px; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; white-space: nowrap; box-shadow: 0 1px 2px rgba(59,75,107,0.25); }
+  .btn-primary:hover { background: #2E3B54; }
+  .btn-primary svg { width: 14px; height: 14px; }
+
+  .item-list { display: flex; flex-direction: column; gap: 8px; }
+  .item-row { display: flex; align-items: center; justify-content: space-between; padding: 10px 12px; border: 1px solid var(--border); border-radius: 8px; }
+  .item-row:hover { background: var(--accent-soft); }
+  .item-left { display: flex; align-items: center; gap: 10px; }
+
+  .pill { display: inline-flex; align-items: center; gap: 6px; padding: 4px 11px; border-radius: 20px; font-size: 12.5px; font-weight: 500; background: #F3F3F1; }
+
+  .build-tag { font-family: 'IBM Plex Mono', monospace; font-size: 13px; }
+
+  .del-btn { background: transparent; border: none; color: var(--ink-soft); cursor: pointer; padding: 5px; border-radius: 5px; display: flex; }
+  .del-btn:hover { color: var(--danger); background: var(--danger-soft); }
+  .del-btn svg { width: 15px; height: 15px; }
+
+  .empty { text-align: center; color: var(--ink-soft); font-size: 12.5px; padding: 20px; }
+
+  /* --- Users tab --- */
+  .user-row { display: flex; align-items: center; justify-content: space-between; padding: 12px; border: 1px solid var(--border); border-radius: 8px; }
+  .user-row:hover { background: var(--accent-soft); }
+  .user-left { display: flex; align-items: center; gap: 12px; }
+  .user-avatar { width: 36px; height: 36px; border-radius: 50%; background: var(--accent); color: white; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700; flex-shrink: 0; }
+  .user-name { font-weight: 600; font-size: 13.5px; }
+  .user-username { font-size: 12px; color: var(--ink-soft); }
+  .role-badge { display: inline-flex; align-items: center; gap: 5px; padding: 3px 10px; border-radius: 20px; font-size: 11.5px; font-weight: 600; }
+  .role-badge.admin { background: var(--accent-soft); color: var(--accent); }
+  .role-badge.member { background: #F0F0EE; color: var(--ink-soft); }
+  .user-right { display: flex; align-items: center; gap: 12px; }
+  .role-toggle-btn { border: 1px solid var(--border); background: var(--surface); border-radius: 7px; padding: 7px 13px; font-family: inherit; font-size: 12.5px; font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; }
+  .role-toggle-btn.promote { color: var(--accent); border-color: var(--accent); }
+  .role-toggle-btn.promote:hover { background: var(--accent-soft); }
+  .role-toggle-btn.demote { color: var(--danger); border-color: var(--danger); }
+  .role-toggle-btn.demote:hover { background: var(--danger-soft); }
+  .role-toggle-btn svg { width: 13px; height: 13px; }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div>
+    <h1>Admin Settings</h1>
+    <div class="subtitle">Manage team members and lookup values used across bug reports</div>
+  </div>
+  <button class="btn-ghost"><i data-feather="arrow-left"></i>Back to Bug List</button>
+</div>
+
+<div class="container">
+
+  <div class="tabs">
+    <div class="tab active" data-tab="users"><i data-feather="users"></i>Users</div>
+    <div class="tab" data-tab="status"><i data-feather="tag"></i>Statuses</div>
+    <div class="tab" data-tab="impact"><i data-feather="alert-triangle"></i>Impacts</div>
+    <div class="tab" data-tab="variant"><i data-feather="layers"></i>Variants</div>
+    <div class="tab" data-tab="build"><i data-feather="package"></i>Affected Builds</div>
+  </div>
+
+  <!-- USERS PANEL -->
+  <div class="panel active" id="panel-users">
+    <div class="card">
+      <h3>Team members</h3>
+      <div class="desc">Promote a member to Admin to give them access to this settings page, or demote back to Member.</div>
+      <div class="item-list" id="list-users"></div>
+    </div>
+  </div>
+
+  <!-- STATUS PANEL -->
+  <div class="panel" id="panel-status">
+    <div class="card">
+      <h3>Add a new status</h3>
+      <div class="desc">Appears as an option in the bug Status field and filters.</div>
+      <div class="add-row">
+        <input type="text" id="newStatusInput" placeholder="e.g. Awaiting Release">
+        <select id="newStatusColor">
+          <option value="#2563EB">Blue</option>
+          <option value="#D97706">Amber</option>
+          <option value="#7C3AED">Violet</option>
+          <option value="#059669">Green</option>
+          <option value="#6B7280">Grey</option>
+          <option value="#DC2626">Red</option>
+        </select>
+        <button class="btn-primary" onclick="addItem('status')"><i data-feather="plus"></i>Add</button>
+      </div>
+      <div class="item-list" id="list-status"></div>
+    </div>
+  </div>
+
+  <!-- IMPACT PANEL -->
+  <div class="panel" id="panel-impact">
+    <div class="card">
+      <h3>Add a new impact level</h3>
+      <div class="desc">Appears as an option in the bug Impact field and filters.</div>
+      <div class="add-row">
+        <input type="text" id="newImpactInput" placeholder="e.g. Showstopper">
+        <select id="newImpactColor">
+          <option value="#9CA3AF">Grey</option>
+          <option value="#3B82F6">Blue</option>
+          <option value="#F59E0B">Amber</option>
+          <option value="#EF4444">Red</option>
+          <option value="#7F1D1D">Dark Red</option>
+        </select>
+        <button class="btn-primary" onclick="addItem('impact')"><i data-feather="plus"></i>Add</button>
+      </div>
+      <div class="item-list" id="list-impact"></div>
+    </div>
+  </div>
+
+  <!-- VARIANT PANEL -->
+  <div class="panel" id="panel-variant">
+    <div class="card">
+      <h3>Add a new variant</h3>
+      <div class="desc">Appears as an option for the Variant field on each bug, and as a filter across the app.</div>
+      <div class="add-row">
+        <input type="text" id="newVariantInput" placeholder="e.g. UK" style="text-transform:uppercase">
+        <button class="btn-primary" onclick="addItem('variant')"><i data-feather="plus"></i>Add</button>
+      </div>
+      <div class="item-list" id="list-variant"></div>
+    </div>
+  </div>
+
+  <!-- BUILD PANEL -->
+  <div class="panel" id="panel-build">
+    <div class="card">
+      <h3>Add a new affected build</h3>
+      <div class="desc">Appears as an option for Affected Build / Fixed Build fields.</div>
+      <div class="add-row">
+        <input type="text" id="newBuildInput" placeholder="e.g. 2.5.0">
+        <button class="btn-primary" onclick="addItem('build')"><i data-feather="plus"></i>Add</button>
+      </div>
+      <div class="item-list" id="list-build"></div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+const data = {
+  status: [
+    { label: "Open", color: "#2563EB", icon: "circle" },
+    { label: "In Progress", color: "#D97706", icon: "refresh-cw" },
+    { label: "In Test", color: "#7C3AED", icon: "activity" },
+    { label: "Resolved", color: "#059669", icon: "check-circle" },
+    { label: "Closed", color: "#6B7280", icon: "x-circle" },
+    { label: "On Hold", color: "#B45309", icon: "pause-circle" },
+    { label: "Needs Support", color: "#DC2626", icon: "life-buoy" },
+    { label: "Not an issue", color: "#9CA3AF", icon: "slash" },
+  ],
+  impact: [
+    { label: "Cosmetic", color: "#9CA3AF", icon: "eye" },
+    { label: "Minor", color: "#3B82F6", icon: "alert-circle" },
+    { label: "Major", color: "#F59E0B", icon: "alert-triangle" },
+    { label: "Critical", color: "#EF4444", icon: "zap" },
+    { label: "Blocker", color: "#7F1D1D", icon: "alert-octagon" },
+  ],
+  variant: [
+    { label: "DE" }, { label: "AT" }, { label: "FR" }, { label: "DELF7" },
+  ],
+  build: [
+    { label: "2.3.0" }, { label: "2.3.4" }, { label: "2.3.9" }, { label: "2.4.0" }, { label: "2.4.1" },
+  ]
+};
+
+const users = [
+  { name: "Sreejith", username: "sreejith", role: "Admin" },
+  { name: "Meera", username: "meera", role: "Member" },
+  { name: "Arjun", username: "arjun", role: "Member" },
+  { name: "Lena", username: "lena", role: "Admin" },
+  { name: "Nithin", username: "nithin", role: "Member" },
+  { name: "Thomas", username: "thomas", role: "Member" },
+];
+
+function initials(name) {
+  return name.split(" ").map(p => p[0]).join("").toUpperCase().slice(0,2);
+}
+
+function renderUsers() {
+  const container = document.getElementById("list-users");
+  container.innerHTML = users.map((u, idx) => `
+    <div class="user-row">
+      <div class="user-left">
+        <div class="user-avatar">${initials(u.name)}</div>
+        <div>
+          <div class="user-name">${u.name}</div>
+          <div class="user-username mono">@${u.username}</div>
+        </div>
+      </div>
+      <div class="user-right">
+        <span class="role-badge ${u.role === 'Admin' ? 'admin' : 'member'}">
+          <i data-feather="${u.role === 'Admin' ? 'shield' : 'user'}" style="width:12px;height:12px"></i>${u.role}
+        </span>
+        <button class="role-toggle-btn ${u.role === 'Admin' ? 'demote' : 'promote'}" onclick="toggleRole(${idx})">
+          <i data-feather="${u.role === 'Admin' ? 'arrow-down' : 'arrow-up'}"></i>
+          ${u.role === 'Admin' ? 'Demote' : 'Promote to Admin'}
+        </button>
+      </div>
+    </div>
+  `).join("");
+  feather.replace();
+}
+
+function toggleRole(idx) {
+  users[idx].role = users[idx].role === 'Admin' ? 'Member' : 'Admin';
+  renderUsers();
+}
+
+function renderList(type) {
+  const container = document.getElementById(`list-${type}`);
+  const items = data[type];
+  if (items.length === 0) {
+    container.innerHTML = `<div class="empty">No entries yet. Add one above.</div>`;
+    return;
+  }
+  container.innerHTML = items.map((item, idx) => {
+    let display;
+    if (type === 'build' || type === 'variant') {
+      display = `<span class="build-tag">${item.label}</span>`;
+    } else {
+      display = `<span class="pill" style="color:${item.color}"><i data-feather="${item.icon}" class="icon"></i>${item.label}</span>`;
+    }
+    return `
+      <div class="item-row">
+        <div class="item-left">${display}</div>
+        <button class="del-btn" onclick="deleteItem('${type}', ${idx})"><i data-feather="trash-2"></i></button>
+      </div>`;
+  }).join("");
+  feather.replace();
+}
+
+function addItem(type) {
+  if (type === 'status') {
+    const input = document.getElementById('newStatusInput');
+    const color = document.getElementById('newStatusColor').value;
+    if (!input.value.trim()) return;
+    data.status.push({ label: input.value.trim(), color, icon: "tag" });
+    input.value = "";
+  } else if (type === 'impact') {
+    const input = document.getElementById('newImpactInput');
+    const color = document.getElementById('newImpactColor').value;
+    if (!input.value.trim()) return;
+    data.impact.push({ label: input.value.trim(), color, icon: "tag" });
+    input.value = "";
+  } else if (type === 'variant') {
+    const input = document.getElementById('newVariantInput');
+    if (!input.value.trim()) return;
+    data.variant.push({ label: input.value.trim().toUpperCase() });
+    input.value = "";
+  } else if (type === 'build') {
+    const input = document.getElementById('newBuildInput');
+    if (!input.value.trim()) return;
+    data.build.push({ label: input.value.trim() });
+    input.value = "";
+  }
+  renderList(type);
+}
+
+function deleteItem(type, idx) {
+  data[type].splice(idx, 1);
+  renderList(type);
+}
+
+// Tabs
+document.querySelectorAll('.tab').forEach(tab => {
+  tab.addEventListener('click', () => {
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+    tab.classList.add('active');
+    document.getElementById(`panel-${tab.dataset.tab}`).classList.add('active');
+  });
+});
+
+renderUsers();
+renderList('status');
+renderList('impact');
+renderList('variant');
+renderList('build');
+feather.replace();
+</script>
+
+</body>
+</html>

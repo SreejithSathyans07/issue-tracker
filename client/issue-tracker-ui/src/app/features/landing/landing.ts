@@ -27,6 +27,7 @@ export class Landing implements OnInit {
   variants = signal<LookupItem[]>([]);
   impacts = signal<LookupItem[]>([]);
   statuses = signal<LookupItem[]>([]);
+  builds = signal<LookupItem[]>([]);
   users = signal<UserResponse[]>([]);
 
   profileMenuOpen = signal(false);
@@ -39,6 +40,7 @@ export class Landing implements OnInit {
     this.lookup.getVariants().subscribe((v) => this.variants.set(v));
     this.lookup.getImpacts().subscribe((i) => this.impacts.set(i));
     this.lookup.getStatuses().subscribe((s) => this.statuses.set(s));
+    this.lookup.getBuilds().subscribe((b) => this.builds.set(b));
     this.lookup.getUsers().subscribe((u) => this.users.set(u));
   }
 
@@ -120,22 +122,24 @@ export class Landing implements OnInit {
     const statusId = this.statuses().find((s) => s.name === statusName)?.id;
     const variantId = this.variants().find((v) => v.name === bug.variant)?.id;
     const impactId = this.impacts().find((i) => i.name === bug.impact)?.id;
+    const affectedBuildId = this.builds().find((b) => b.name === bug.affectedBuild)?.id;
+    const fixedBuildId = this.builds().find((b) => b.name === bug.fixedBuild)?.id ?? null;
     const responsibleId = this.users().find((u) => u.name === bug.responsible)?.id;
 
-    if (!statusId || !variantId || !impactId || !responsibleId) {
+    if (!statusId || !variantId || !impactId || !affectedBuildId || !responsibleId) {
       return;
     }
 
     const payload: UpdateBugRequest = {
       title: bug.title,
       description: bug.description,
-      affectedBuild: bug.affectedBuild,
+      affectedBuildId,
       expectedBehavior: bug.expectedBehavior,
       remarks: bug.remarks,
       variantId,
       impactId,
       statusId,
-      fixedBuild: bug.fixedBuild,
+      fixedBuildId,
       responsibleId
     };
 

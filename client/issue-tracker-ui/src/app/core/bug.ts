@@ -21,7 +21,7 @@ export interface BugResponse {
 export interface CreateBugRequest {
   title: string;
   description: string;
-  affectedBuild: string;
+  affectedBuildId: number;
   expectedBehavior: string | null;
   remarks: string | null;
   variantId: number;
@@ -32,13 +32,13 @@ export interface CreateBugRequest {
 export interface UpdateBugRequest {
   title: string;
   description: string;
-  affectedBuild: string;
+  affectedBuildId: number;
   expectedBehavior: string | null;
   remarks: string | null;
   variantId: number;
   impactId: number;
   statusId: number;
-  fixedBuild: string | null;
+  fixedBuildId: number | null;
   responsibleId: number;
 }
 

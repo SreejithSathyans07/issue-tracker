@@ -16,6 +16,12 @@ public class BugService : IBugService
 
     public async Task<(BugResponse? Bug, string? Error)> CreateBugAsync(CreateBugRequest request, int reporterId)
     {
+        var affectedBuild = await _db.Builds.FindAsync(request.AffectedBuildId);
+        if (affectedBuild == null)
+        {
+            return (null, "Invalid AffectedBuildId.");
+        }
+
         var variant = await _db.Variants.FindAsync(request.VariantId);
         if (variant == null)
         {
@@ -50,7 +56,7 @@ public class BugService : IBugService
         {
             Title = request.Title,
             Description = request.Description,
-            AffectedBuild = request.AffectedBuild,
+            AffectedBuild = affectedBuild,
             ExpectedBehavior = request.ExpectedBehavior,
             Remarks = request.Remarks,
             Variant = variant,
@@ -69,6 +75,8 @@ public class BugService : IBugService
     public async Task<List<BugResponse>> GetAllBugsAsync()
     {
         var bugs = await _db.Bugs
+            .Include(b => b.AffectedBuild)
+            .Include(b => b.FixedBuild)
             .Include(b => b.Variant)
             .Include(b => b.Impact)
             .Include(b => b.Status)
@@ -82,6 +90,8 @@ public class BugService : IBugService
     public async Task<(BugResponse? Bug, string? Error)> UpdateBugAsync(int bugId, UpdateBugRequest request)
     {
         var bug = await _db.Bugs
+            .Include(b => b.AffectedBuild)
+            .Include(b => b.FixedBuild)
             .Include(b => b.Variant)
             .Include(b => b.Impact)
             .Include(b => b.Status)
@@ -92,6 +102,22 @@ public class BugService : IBugService
         if (bug == null)
         {
             return (null, "Bug not found.");
+        }
+
+        var affectedBuild = await _db.Builds.FindAsync(request.AffectedBuildId);
+        if (affectedBuild == null)
+        {
+            return (null, "Invalid AffectedBuildId.");
+        }
+
+        Build? fixedBuild = null;
+        if (request.FixedBuildId.HasValue)
+        {
+            fixedBuild = await _db.Builds.FindAsync(request.FixedBuildId.Value);
+            if (fixedBuild == null)
+            {
+                return (null, "Invalid FixedBuildId.");
+            }
         }
 
         var variant = await _db.Variants.FindAsync(request.VariantId);
@@ -120,13 +146,13 @@ public class BugService : IBugService
 
         bug.Title = request.Title;
         bug.Description = request.Description;
-        bug.AffectedBuild = request.AffectedBuild;
+        bug.AffectedBuild = affectedBuild;
+        bug.FixedBuild = fixedBuild;
         bug.ExpectedBehavior = request.ExpectedBehavior;
         bug.Variant = variant;
         bug.Impact = impact;
         bug.Status = status;
         bug.Responsible = responsible;
-        bug.FixedBuild = request.FixedBuild;
         bug.Remarks = request.Remarks;
 
         await _db.SaveChangesAsync();
@@ -139,8 +165,8 @@ public class BugService : IBugService
         BugId = bug.BugId,
         Title = bug.Title,
         Description = bug.Description,
-        AffectedBuild = bug.AffectedBuild,
-        FixedBuild = bug.FixedBuild,
+        AffectedBuild = bug.AffectedBuild.Name,
+        FixedBuild = bug.FixedBuild?.Name,
         ExpectedBehavior = bug.ExpectedBehavior,
         Remarks = bug.Remarks,
         Variant = bug.Variant.Name,

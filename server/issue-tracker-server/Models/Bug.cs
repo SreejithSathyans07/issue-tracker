@@ -5,10 +5,14 @@ public class Bug
     public int BugId { get; set; }
     public required string Title { get; set; }
     public required string Description { get; set; }
-    public required string AffectedBuild { get; set; }
-    public string? FixedBuild { get; set; }
     public string? ExpectedBehavior { get; set; }
     public string? Remarks { get; set; }
+
+    public int AffectedBuildId { get; set; }
+    public required Build AffectedBuild { get; set; }
+
+    public int? FixedBuildId { get; set; }
+    public Build? FixedBuild { get; set; }
 
     public int VariantId { get; set; }
     public required Variant Variant { get; set; }

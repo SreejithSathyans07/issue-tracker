@@ -11,6 +11,7 @@ public class AppDbContext : DbContext
     public DbSet<Variant> Variants { get; set; }
     public DbSet<Impact> Impacts { get; set; }
     public DbSet<Status> Statuses { get; set; }
+    public DbSet<Build> Builds { get; set; }
     public DbSet<Bug> Bugs { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -22,6 +23,18 @@ public class AppDbContext : DbContext
         modelBuilder.Entity<User>()
             .Property(u => u.Role)
             .HasConversion<string>();
+
+        modelBuilder.Entity<Bug>()
+            .HasOne(b => b.AffectedBuild)
+            .WithMany()
+            .HasForeignKey(b => b.AffectedBuildId)
+            .OnDelete(DeleteBehavior.Restrict);
+
+        modelBuilder.Entity<Bug>()
+            .HasOne(b => b.FixedBuild)
+            .WithMany()
+            .HasForeignKey(b => b.FixedBuildId)
+            .OnDelete(DeleteBehavior.Restrict);
 
         modelBuilder.Entity<Bug>()
             .HasOne(b => b.Variant)
@@ -79,6 +92,19 @@ public class AppDbContext : DbContext
             new Status { Id = 7, Name = "Needs Support" },
             new Status { Id = 8, Name = "Not an issue" },
             new Status { Id = 9, Name = "Change Request" }
+        );
+
+        modelBuilder.Entity<Build>().HasData(
+            new Build { Id = 1, Name = "2.3.0" },
+            new Build { Id = 2, Name = "2.3.2" },
+            new Build { Id = 3, Name = "2.3.4" },
+            new Build { Id = 4, Name = "2.3.5" },
+            new Build { Id = 5, Name = "2.3.6" },
+            new Build { Id = 6, Name = "2.3.7" },
+            new Build { Id = 7, Name = "2.3.8" },
+            new Build { Id = 8, Name = "2.3.9" },
+            new Build { Id = 9, Name = "2.4.0" },
+            new Build { Id = 10, Name = "2.4.1" }
         );
     }
 }

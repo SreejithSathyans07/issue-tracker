@@ -25,6 +25,10 @@ export class Lookup {
     return this.http.get<LookupItem[]>(`${environment.apiBaseUrl}/statuses`);
   }
 
+  getBuilds(): Observable<LookupItem[]> {
+    return this.http.get<LookupItem[]>(`${environment.apiBaseUrl}/builds`);
+  }
+
   getUsers(): Observable<UserResponse[]> {
     return this.http.get<UserResponse[]>(`${environment.apiBaseUrl}/users`);
   }
