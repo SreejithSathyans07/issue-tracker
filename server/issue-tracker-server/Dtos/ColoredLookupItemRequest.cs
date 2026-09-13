@@ -1,8 +1,7 @@
-namespace issue_tracker_server.Models;
+namespace issue_tracker_server.Dtos;
 
-public class Impact
+public class ColoredLookupItemRequest
 {
-    public int Id { get; set; }
     public required string Name { get; set; }
     public required string Color { get; set; }
     public required string Icon { get; set; }

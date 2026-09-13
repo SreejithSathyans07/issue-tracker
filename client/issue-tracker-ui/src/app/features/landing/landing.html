@@ -13,14 +13,16 @@
       <div class="profile-avatar">{{ initials(auth.getUser()?.name) }}</div>
       <div>
         <div class="profile-name">{{ auth.getUser()?.name }}</div>
-        <div class="profile-role">Team Member</div>
+        <div class="profile-role">{{ auth.getUser()?.role === 'Admin' ? 'Admin' : 'Team Member' }}</div>
       </div>
       <app-icon name="chevron-down" [size]="13" />
 
       @if (profileMenuOpen()) {
         <div class="profile-menu">
           <a><app-icon name="user" [size]="14" />My Profile</a>
-          <a><app-icon name="settings" [size]="14" />Admin Settings</a>
+          @if (auth.isAdmin()) {
+            <a (click)="goToAdmin()"><app-icon name="settings" [size]="14" />Admin Settings</a>
+          }
           <div class="divider"></div>
           <a (click)="logout()"><app-icon name="log-out" [size]="14" />Log Out</a>
         </div>

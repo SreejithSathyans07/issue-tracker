@@ -1,0 +1,135 @@
+<div class="topbar">
+  <div>
+    <h1>Admin Settings</h1>
+    <div class="subtitle">Manage team members and lookup values used across bug reports</div>
+  </div>
+  <button class="btn-ghost" (click)="back()">
+    <app-icon name="arrow-left" [size]="14" />
+    Back to Bug List
+  </button>
+</div>
+
+<div class="container">
+  <div class="tabs">
+    <div class="tab" [class.active]="activeTab() === 'users'" (click)="setTab('users')">
+      <app-icon name="users" [size]="14" />
+      Users
+    </div>
+    <div class="tab" [class.active]="activeTab() === 'status'" (click)="setTab('status')">
+      <app-icon name="tag" [size]="14" />
+      Statuses
+    </div>
+    <div class="tab" [class.active]="activeTab() === 'impact'" (click)="setTab('impact')">
+      <app-icon name="alert-triangle" [size]="14" />
+      Impacts
+    </div>
+    <div class="tab" [class.active]="activeTab() === 'variant'" (click)="setTab('variant')">
+      <app-icon name="layers" [size]="14" />
+      Variants
+    </div>
+    <div class="tab" [class.active]="activeTab() === 'build'" (click)="setTab('build')">
+      <app-icon name="package" [size]="14" />
+      Affected Builds
+    </div>
+  </div>
+
+  @switch (activeTab()) {
+    @case ('users') {
+      <div class="card">
+        <h3>Team members</h3>
+        <div class="desc">Promote a member to Admin to give them access to this settings page, or demote back to Member.</div>
+
+        @if (userError()) {
+          <div class="callout callout-error">
+            <app-icon name="alert-circle" [size]="15" />
+            <span>{{ userError() }}</span>
+          </div>
+        }
+
+        <div class="item-list">
+          @for (u of users(); track u.id) {
+            <div class="user-row">
+              <div class="user-left">
+                <div class="user-avatar">{{ initials(u.name) }}</div>
+                <div>
+                  <div class="user-name">{{ u.name }}</div>
+                  <div class="user-username mono">&#64;{{ u.username }}</div>
+                </div>
+              </div>
+              <div class="user-right">
+                <span class="role-badge" [class.admin]="u.role === 'Admin'" [class.member]="u.role !== 'Admin'">
+                  <app-icon [name]="u.role === 'Admin' ? 'shield' : 'user'" [size]="12" />
+                  {{ u.role === 'Admin' ? 'Admin' : 'Member' }}
+                </span>
+                <button
+                  class="role-toggle-btn"
+                  [class.promote]="u.role !== 'Admin'"
+                  [class.demote]="u.role === 'Admin'"
+                  [disabled]="u.id === currentUserId()"
+                  (click)="toggleRole(u)"
+                >
+                  <app-icon [name]="u.role === 'Admin' ? 'arrow-down' : 'arrow-up'" [size]="13" />
+                  {{ u.role === 'Admin' ? 'Demote' : 'Promote to Admin' }}
+                </button>
+              </div>
+            </div>
+          }
+        </div>
+      </div>
+    }
+
+    @case ('status') {
+      <app-colored-lookup-tab
+        heading="Add a new status"
+        description="Appears as an option in the bug Status field and filters."
+        placeholder="e.g. Awaiting Release"
+        [items]="statuses()"
+        [colorOptions]="statusColors"
+        [error]="statusError()"
+        (create)="createStatus($event)"
+        (update)="updateStatus($event)"
+        (delete)="deleteStatus($event)"
+      />
+    }
+
+    @case ('impact') {
+      <app-colored-lookup-tab
+        heading="Add a new impact level"
+        description="Appears as an option in the bug Impact field and filters."
+        placeholder="e.g. Showstopper"
+        [items]="impacts()"
+        [colorOptions]="impactColors"
+        [error]="impactError()"
+        (create)="createImpact($event)"
+        (update)="updateImpact($event)"
+        (delete)="deleteImpact($event)"
+      />
+    }
+
+    @case ('variant') {
+      <app-lookup-tab
+        heading="Add a new variant"
+        description="Appears as an option for the Variant field on each bug, and as a filter across the app."
+        placeholder="e.g. UK"
+        [items]="variants()"
+        [error]="variantError()"
+        (create)="createVariant($event)"
+        (update)="updateVariant($event)"
+        (delete)="deleteVariant($event)"
+      />
+    }
+
+    @case ('build') {
+      <app-lookup-tab
+        heading="Add a new affected build"
+        description="Appears as an option for Affected Build / Fixed Build fields."
+        placeholder="e.g. 2.5.0"
+        [items]="builds()"
+        [error]="buildError()"
+        (create)="createBuild($event)"
+        (update)="updateBuild($event)"
+        (delete)="deleteBuild($event)"
+      />
+    }
+  }
+</div>

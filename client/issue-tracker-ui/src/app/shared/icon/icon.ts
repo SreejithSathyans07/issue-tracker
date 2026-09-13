@@ -25,7 +25,17 @@ import {
   LucideSlash,
   LucideAlertTriangle,
   LucideZap,
-  LucideAlertOctagon
+  LucideAlertOctagon,
+  LucideArrowLeft,
+  LucideUsers,
+  LucideTag,
+  LucideLayers,
+  LucidePackage,
+  LucideTrash2,
+  LucideShield,
+  LucideArrowDown,
+  LucideArrowUp,
+  LucidePencil
 } from '@lucide/angular';
 
 const ICONS: Record<string, LucideIcon> = {
@@ -52,8 +62,38 @@ const ICONS: Record<string, LucideIcon> = {
   slash: LucideSlash,
   'alert-triangle': LucideAlertTriangle,
   zap: LucideZap,
-  'alert-octagon': LucideAlertOctagon
+  'alert-octagon': LucideAlertOctagon,
+  'arrow-left': LucideArrowLeft,
+  users: LucideUsers,
+  tag: LucideTag,
+  layers: LucideLayers,
+  package: LucidePackage,
+  'trash-2': LucideTrash2,
+  shield: LucideShield,
+  'arrow-down': LucideArrowDown,
+  'arrow-up': LucideArrowUp,
+  pencil: LucidePencil
 };
+
+/** Icon names that make sense for a user-facing icon picker (Status/Impact lookup values). */
+export const PICKABLE_ICON_NAMES = [
+  'circle',
+  'refresh-cw',
+  'activity',
+  'check-circle',
+  'x-circle',
+  'pause-circle',
+  'life-buoy',
+  'slash',
+  'alert-circle',
+  'alert-triangle',
+  'zap',
+  'alert-octagon',
+  'eye',
+  'tag',
+  'clipboard',
+  'shield'
+];
 
 @Component({
   selector: 'app-icon',

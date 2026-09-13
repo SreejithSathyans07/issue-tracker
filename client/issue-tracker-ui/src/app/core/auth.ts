@@ -7,6 +7,7 @@ export interface UserResponse {
   id: number;
   name: string;
   username: string;
+  role: 'Admin' | 'User';
 }
 
 export interface LoginResponse {
@@ -61,5 +62,9 @@ export class Auth {
 
   isLoggedIn(): boolean {
     return !!this.getToken();
+  }
+
+  isAdmin(): boolean {
+    return this.getUser()?.role === 'Admin';
   }
 }

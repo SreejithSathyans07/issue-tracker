@@ -54,7 +54,8 @@ public class AuthService : IAuthService
         {
             Id = user.Id,
             Name = user.Name,
-            Username = user.Username
+            Username = user.Username,
+            Role = user.Role.ToString()
         };
 
         return (response, null);
@@ -86,7 +87,8 @@ public class AuthService : IAuthService
             {
                 Id = user.Id,
                 Name = user.Name,
-                Username = user.Username
+                Username = user.Username,
+                Role = user.Role.ToString()
             }
         };
 

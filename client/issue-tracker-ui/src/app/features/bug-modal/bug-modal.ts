@@ -2,9 +2,8 @@ import { Component, HostListener, effect, inject, input, output, signal } from '
 import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
 import { Icon } from '../../shared/icon/icon';
 import { Loader } from '../../shared/loader/loader';
-import { STATUS_META, IMPACT_META, BugMeta } from '../../shared/bug-meta';
 import { Bug as BugService, BugResponse, CreateBugRequest, UpdateBugRequest } from '../../core/bug';
-import { LookupItem } from '../../core/lookup';
+import { LookupItem, ColoredLookupItem } from '../../core/lookup';
 import { UserResponse } from '../../core/auth';
 
 @Component({
@@ -20,8 +19,8 @@ export class BugModal {
   mode = input<'add' | 'edit'>('add');
   bug = input<BugResponse | null>(null);
   variants = input<LookupItem[]>([]);
-  impacts = input<LookupItem[]>([]);
-  statuses = input<LookupItem[]>([]);
+  impacts = input<ColoredLookupItem[]>([]);
+  statuses = input<ColoredLookupItem[]>([]);
   builds = input<LookupItem[]>([]);
   users = input<UserResponse[]>([]);
   reporterName = input<string>('');
@@ -87,17 +86,12 @@ export class BugModal {
     return this.mode() === 'edit';
   }
 
-  metaFor(map: Record<string, BugMeta>, list: LookupItem[], id: number | null): BugMeta | null {
-    const item = list.find((x) => x.id === id);
-    return item ? (map[item.name] ?? null) : null;
+  get impactPreview(): ColoredLookupItem | null {
+    return this.impacts().find((i) => i.id === this.form.value.impactId) ?? null;
   }
 
-  get impactPreview(): BugMeta | null {
-    return this.metaFor(IMPACT_META, this.impacts(), this.form.value.impactId ?? null);
-  }
-
-  get statusPreview(): BugMeta | null {
-    return this.metaFor(STATUS_META, this.statuses(), this.form.value.statusId ?? null);
+  get statusPreview(): ColoredLookupItem | null {
+    return this.statuses().find((s) => s.id === this.form.value.statusId) ?? null;
   }
 
   @HostListener('document:keydown.escape')

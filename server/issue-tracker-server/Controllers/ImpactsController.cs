@@ -20,10 +20,10 @@ public class ImpactsController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<ActionResult<List<LookupItemResponse>>> GetAll()
+    public async Task<ActionResult<List<ColoredLookupItemResponse>>> GetAll()
     {
         var impacts = await _db.Impacts
-            .Select(i => new LookupItemResponse { Id = i.Id, Name = i.Name })
+            .Select(i => new ColoredLookupItemResponse { Id = i.Id, Name = i.Name, Color = i.Color, Icon = i.Icon })
             .ToListAsync();
 
         return Ok(impacts);
@@ -31,19 +31,19 @@ public class ImpactsController : ControllerBase
 
     [HttpPost]
     [Authorize(Policy = "Administration")]
-    public async Task<ActionResult<LookupItemResponse>> Create(LookupItemRequest request)
+    public async Task<ActionResult<ColoredLookupItemResponse>> Create(ColoredLookupItemRequest request)
     {
-        var impact = new Impact { Name = request.Name };
+        var impact = new Impact { Name = request.Name, Color = request.Color, Icon = request.Icon };
         _db.Impacts.Add(impact);
         await _db.SaveChangesAsync();
 
-        var response = new LookupItemResponse { Id = impact.Id, Name = impact.Name };
+        var response = new ColoredLookupItemResponse { Id = impact.Id, Name = impact.Name, Color = impact.Color, Icon = impact.Icon };
         return CreatedAtAction(nameof(GetAll), null, response);
     }
 
     [HttpPut("{id}")]
     [Authorize(Policy = "Administration")]
-    public async Task<ActionResult<LookupItemResponse>> Update(int id, LookupItemRequest request)
+    public async Task<ActionResult<ColoredLookupItemResponse>> Update(int id, ColoredLookupItemRequest request)
     {
         var impact = await _db.Impacts.FindAsync(id);
         if (impact == null)
@@ -52,9 +52,11 @@ public class ImpactsController : ControllerBase
         }
 
         impact.Name = request.Name;
+        impact.Color = request.Color;
+        impact.Icon = request.Icon;
         await _db.SaveChangesAsync();
 
-        return Ok(new LookupItemResponse { Id = impact.Id, Name = impact.Name });
+        return Ok(new ColoredLookupItemResponse { Id = impact.Id, Name = impact.Name, Color = impact.Color, Icon = impact.Icon });
     }
 
     [HttpDelete("{id}")]

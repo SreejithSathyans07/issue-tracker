@@ -67,11 +67,11 @@ public class AppDbContext : DbContext
             .OnDelete(DeleteBehavior.Restrict);
 
         modelBuilder.Entity<Impact>().HasData(
-            new Impact { Id = 1, Name = "Cosmetic" },
-            new Impact { Id = 2, Name = "Minor" },
-            new Impact { Id = 3, Name = "Major" },
-            new Impact { Id = 4, Name = "Critical" },
-            new Impact { Id = 5, Name = "Blocker" }
+            new Impact { Id = 1, Name = "Cosmetic", Color = "#9CA3AF", Icon = "eye" },
+            new Impact { Id = 2, Name = "Minor", Color = "#3B82F6", Icon = "alert-circle" },
+            new Impact { Id = 3, Name = "Major", Color = "#F59E0B", Icon = "alert-triangle" },
+            new Impact { Id = 4, Name = "Critical", Color = "#EF4444", Icon = "zap" },
+            new Impact { Id = 5, Name = "Blocker", Color = "#7F1D1D", Icon = "alert-octagon" }
         );
 
         modelBuilder.Entity<Variant>().HasData(
@@ -83,15 +83,15 @@ public class AppDbContext : DbContext
         );
 
         modelBuilder.Entity<Status>().HasData(
-            new Status { Id = 1, Name = "Open" },
-            new Status { Id = 2, Name = "Closed" },
-            new Status { Id = 3, Name = "Resolved" },
-            new Status { Id = 4, Name = "In Test" },
-            new Status { Id = 5, Name = "In Progress" },
-            new Status { Id = 6, Name = "On Hold" },
-            new Status { Id = 7, Name = "Needs Support" },
-            new Status { Id = 8, Name = "Not an issue" },
-            new Status { Id = 9, Name = "Change Request" }
+            new Status { Id = 1, Name = "Open", Color = "#2563EB", Icon = "circle" },
+            new Status { Id = 2, Name = "Closed", Color = "#6B7280", Icon = "x-circle" },
+            new Status { Id = 3, Name = "Resolved", Color = "#059669", Icon = "check-circle" },
+            new Status { Id = 4, Name = "In Test", Color = "#7C3AED", Icon = "activity" },
+            new Status { Id = 5, Name = "In Progress", Color = "#D97706", Icon = "refresh-cw" },
+            new Status { Id = 6, Name = "On Hold", Color = "#B45309", Icon = "pause-circle" },
+            new Status { Id = 7, Name = "Needs Support", Color = "#DC2626", Icon = "life-buoy" },
+            new Status { Id = 8, Name = "Not an issue", Color = "#9CA3AF", Icon = "slash" },
+            new Status { Id = 9, Name = "Change Request", Color = "#0891B2", Icon = "clipboard" }
         );
 
         modelBuilder.Entity<Build>().HasData(

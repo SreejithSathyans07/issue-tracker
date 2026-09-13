@@ -1,0 +1,62 @@
+<div class="card">
+  <h3>{{ heading() }}</h3>
+  <div class="desc">{{ description() }}</div>
+
+  <div class="add-row">
+    <input
+      type="text"
+      [placeholder]="placeholder()"
+      [(ngModel)]="newName"
+      (keydown.enter)="submitNew()"
+    >
+    <button class="btn-primary" (click)="submitNew()">
+      <app-icon name="plus" [size]="14" />
+      Add
+    </button>
+  </div>
+
+  @if (error()) {
+    <div class="callout callout-error">
+      <app-icon name="alert-circle" [size]="15" />
+      <span>{{ error() }}</span>
+    </div>
+  }
+
+  <div class="item-list">
+    @if (items().length === 0) {
+      <div class="empty">No entries yet. Add one above.</div>
+    } @else {
+      @for (item of items(); track item.id) {
+        <div class="item-row">
+          @if (editingId() === item.id) {
+            <input
+              type="text"
+              class="edit-input"
+              [(ngModel)]="editingName"
+              (keydown.enter)="submitEdit(item.id)"
+              (keydown.escape)="cancelEdit()"
+            >
+            <div class="item-actions">
+              <button class="icon-btn save-btn" (click)="submitEdit(item.id)">
+                <app-icon name="check" [size]="15" />
+              </button>
+              <button class="icon-btn" (click)="cancelEdit()">
+                <app-icon name="x" [size]="15" />
+              </button>
+            </div>
+          } @else {
+            <span class="build-tag">{{ item.name }}</span>
+            <div class="item-actions">
+              <button class="icon-btn" (click)="startEdit(item)">
+                <app-icon name="pencil" [size]="14" />
+              </button>
+              <button class="icon-btn del-btn" (click)="delete.emit(item.id)">
+                <app-icon name="trash-2" [size]="15" />
+              </button>
+            </div>
+          }
+        </div>
+      }
+    }
+  </div>
+</div>

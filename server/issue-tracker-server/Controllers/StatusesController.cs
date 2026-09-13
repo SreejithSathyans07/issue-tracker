@@ -20,10 +20,10 @@ public class StatusesController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<ActionResult<List<LookupItemResponse>>> GetAll()
+    public async Task<ActionResult<List<ColoredLookupItemResponse>>> GetAll()
     {
         var statuses = await _db.Statuses
-            .Select(s => new LookupItemResponse { Id = s.Id, Name = s.Name })
+            .Select(s => new ColoredLookupItemResponse { Id = s.Id, Name = s.Name, Color = s.Color, Icon = s.Icon })
             .ToListAsync();
 
         return Ok(statuses);
@@ -31,19 +31,19 @@ public class StatusesController : ControllerBase
 
     [HttpPost]
     [Authorize(Policy = "Administration")]
-    public async Task<ActionResult<LookupItemResponse>> Create(LookupItemRequest request)
+    public async Task<ActionResult<ColoredLookupItemResponse>> Create(ColoredLookupItemRequest request)
     {
-        var status = new Status { Name = request.Name };
+        var status = new Status { Name = request.Name, Color = request.Color, Icon = request.Icon };
         _db.Statuses.Add(status);
         await _db.SaveChangesAsync();
 
-        var response = new LookupItemResponse { Id = status.Id, Name = status.Name };
+        var response = new ColoredLookupItemResponse { Id = status.Id, Name = status.Name, Color = status.Color, Icon = status.Icon };
         return CreatedAtAction(nameof(GetAll), null, response);
     }
 
     [HttpPut("{id}")]
     [Authorize(Policy = "Administration")]
-    public async Task<ActionResult<LookupItemResponse>> Update(int id, LookupItemRequest request)
+    public async Task<ActionResult<ColoredLookupItemResponse>> Update(int id, ColoredLookupItemRequest request)
     {
         var status = await _db.Statuses.FindAsync(id);
         if (status == null)
@@ -52,9 +52,11 @@ public class StatusesController : ControllerBase
         }
 
         status.Name = request.Name;
+        status.Color = request.Color;
+        status.Icon = request.Icon;
         await _db.SaveChangesAsync();
 
-        return Ok(new LookupItemResponse { Id = status.Id, Name = status.Name });
+        return Ok(new ColoredLookupItemResponse { Id = status.Id, Name = status.Name, Color = status.Color, Icon = status.Icon });
     }
 
     [HttpDelete("{id}")]

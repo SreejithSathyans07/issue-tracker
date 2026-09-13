@@ -2,10 +2,9 @@ import { Component, HostListener, OnInit, inject, signal } from '@angular/core';
 import { Router } from '@angular/router';
 import { Icon } from '../../shared/icon/icon';
 import { Loader } from '../../shared/loader/loader';
-import { STATUS_META, IMPACT_META, BugMeta } from '../../shared/bug-meta';
 import { Auth, UserResponse } from '../../core/auth';
 import { Bug as BugService, BugResponse, UpdateBugRequest } from '../../core/bug';
-import { Lookup, LookupItem } from '../../core/lookup';
+import { Lookup, LookupItem, ColoredLookupItem } from '../../core/lookup';
 import { BugModal } from '../bug-modal/bug-modal';
 
 @Component({
@@ -25,8 +24,8 @@ export class Landing implements OnInit {
   loadError = signal<string | null>(null);
 
   variants = signal<LookupItem[]>([]);
-  impacts = signal<LookupItem[]>([]);
-  statuses = signal<LookupItem[]>([]);
+  impacts = signal<ColoredLookupItem[]>([]);
+  statuses = signal<ColoredLookupItem[]>([]);
   builds = signal<LookupItem[]>([]);
   users = signal<UserResponse[]>([]);
 
@@ -69,12 +68,12 @@ export class Landing implements OnInit {
       .toUpperCase();
   }
 
-  impactMeta(name: string): BugMeta | null {
-    return IMPACT_META[name] ?? null;
+  impactMeta(name: string): ColoredLookupItem | null {
+    return this.impacts().find((i) => i.name === name) ?? null;
   }
 
-  statusMeta(name: string): BugMeta | null {
-    return STATUS_META[name] ?? null;
+  statusMeta(name: string): ColoredLookupItem | null {
+    return this.statuses().find((s) => s.name === name) ?? null;
   }
 
   sevClass(impact: string): string {
@@ -95,6 +94,10 @@ export class Landing implements OnInit {
   logout() {
     this.auth.logout();
     this.router.navigate(['/login']);
+  }
+
+  goToAdmin() {
+    this.router.navigate(['/admin']);
   }
 
   openAddModal() {
