@@ -1,0 +1,115 @@
+<div class="topbar">
+  <div>
+    <h1>Bug Tracker</h1>
+    <div class="subtitle">Track and resolve issues across every build variant</div>
+  </div>
+  <div class="right">
+    <button class="btn-primary" (click)="openAddModal()">
+      <app-icon name="plus" [size]="14" />
+      New Bug
+    </button>
+
+    <div class="profile-chip" (click)="toggleProfileMenu(); $event.stopPropagation()">
+      <div class="profile-avatar">{{ initials(auth.getUser()?.name) }}</div>
+      <div>
+        <div class="profile-name">{{ auth.getUser()?.name }}</div>
+        <div class="profile-role">Team Member</div>
+      </div>
+      <app-icon name="chevron-down" [size]="13" />
+
+      @if (profileMenuOpen()) {
+        <div class="profile-menu">
+          <a><app-icon name="user" [size]="14" />My Profile</a>
+          <a><app-icon name="settings" [size]="14" />Admin Settings</a>
+          <div class="divider"></div>
+          <a (click)="logout()"><app-icon name="log-out" [size]="14" />Log Out</a>
+        </div>
+      }
+    </div>
+  </div>
+</div>
+
+<div class="container">
+  @if (loadError()) {
+    <div class="empty-state">{{ loadError() }}</div>
+  } @else {
+    <div class="table-scroll">
+      <table>
+        <thead>
+          <tr>
+            <th>Bug ID</th>
+            <th>Title / Description</th>
+            <th>Expected Behavior</th>
+            <th>Affected Build</th>
+            <th>Impact</th>
+            <th>Status</th>
+            <th>Reporter</th>
+            <th>Responsible</th>
+            <th>Fixed Build</th>
+          </tr>
+        </thead>
+        <tbody>
+          @if (bugs().length === 0) {
+            <tr>
+              <td colspan="9"><div class="empty-state">No bugs reported yet.</div></td>
+            </tr>
+          } @else {
+            @for (bug of bugs(); track bug.bugId) {
+              <tr [class]="sevClass(bug.impact)">
+                <td class="bug-id mono clickable" (click)="openEditModal(bug)">BUG-{{ bug.bugId }}</td>
+                <td>
+                  <div class="bug-title">{{ bug.title }}</div>
+                  <div class="bug-desc">{{ bug.description }}</div>
+                </td>
+                <td class="expected-behavior">{{ bug.expectedBehavior }}</td>
+                <td class="mono">{{ bug.affectedBuild }}</td>
+                <td>
+                  @if (impactMeta(bug.impact); as meta) {
+                    <span class="pill">
+                      <app-icon [name]="meta.icon" [size]="12" [style.color]="meta.color" />
+                      {{ bug.impact }}
+                    </span>
+                  }
+                </td>
+                <td>
+                  <select
+                    class="status-select"
+                    [style.color]="statusMeta(bug.status)?.color"
+                    (change)="quickChangeStatus(bug, $any($event.target).value)"
+                  >
+                    @for (s of statuses(); track s.id) {
+                      <option [value]="s.name" [selected]="s.name === bug.status">{{ s.name }}</option>
+                    }
+                  </select>
+                </td>
+                <td>{{ bug.reporter }}</td>
+                <td>{{ bug.responsible }}</td>
+                <td class="mono">{{ bug.fixedBuild || '—' }}</td>
+              </tr>
+            }
+          }
+        </tbody>
+      </table>
+    </div>
+  }
+</div>
+
+@if (loading()) {
+  <div class="loading-overlay">
+    <app-loader [size]="22" />
+  </div>
+}
+
+@if (modalOpen()) {
+  <app-bug-modal
+    [mode]="modalMode()"
+    [bug]="editingBug()"
+    [variants]="variants()"
+    [impacts]="impacts()"
+    [statuses]="statuses()"
+    [users]="users()"
+    [reporterName]="auth.getUser()?.name ?? ''"
+    (closed)="closeModal()"
+    (saved)="onBugSaved()"
+  />
+}

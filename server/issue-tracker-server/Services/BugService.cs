@@ -94,6 +94,18 @@ public class BugService : IBugService
             return (null, "Bug not found.");
         }
 
+        var variant = await _db.Variants.FindAsync(request.VariantId);
+        if (variant == null)
+        {
+            return (null, "Invalid VariantId.");
+        }
+
+        var impact = await _db.Impacts.FindAsync(request.ImpactId);
+        if (impact == null)
+        {
+            return (null, "Invalid ImpactId.");
+        }
+
         var status = await _db.Statuses.FindAsync(request.StatusId);
         if (status == null)
         {
@@ -106,6 +118,12 @@ public class BugService : IBugService
             return (null, "Invalid ResponsibleId.");
         }
 
+        bug.Title = request.Title;
+        bug.Description = request.Description;
+        bug.AffectedBuild = request.AffectedBuild;
+        bug.ExpectedBehavior = request.ExpectedBehavior;
+        bug.Variant = variant;
+        bug.Impact = impact;
         bug.Status = status;
         bug.Responsible = responsible;
         bug.FixedBuild = request.FixedBuild;

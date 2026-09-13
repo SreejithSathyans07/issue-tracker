@@ -16,7 +16,7 @@ function passwordsMatchValidator(control: AbstractControl): ValidationErrors | n
   templateUrl: './auth.html',
   styleUrl: './auth.css'
 })
-export class AuthComponent {
+export class AuthPage {
   private fb = inject(FormBuilder);
   private authService = inject(AuthService);
   private router = inject(Router);

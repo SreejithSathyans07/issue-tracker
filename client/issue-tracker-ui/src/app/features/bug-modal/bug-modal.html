@@ -1,0 +1,137 @@
+<div class="overlay">
+  <div class="modal">
+    @if (submitting()) {
+      <div class="modal-loading-overlay">
+        <app-loader [size]="24" />
+      </div>
+    }
+
+    <div class="modal-header">
+      <div>
+        <h2>{{ isEdit ? 'Edit Bug' : 'Add New Bug' }}</h2>
+        @if (isEdit) {
+          <div class="bug-id-tag">BUG-{{ bug()?.bugId }}</div>
+        }
+      </div>
+      <button class="close-btn" (click)="close()">
+        <app-icon name="x" [size]="18" />
+      </button>
+    </div>
+
+    <form [formGroup]="form" (ngSubmit)="submit()">
+      <div class="modal-body">
+        <div class="field full">
+          <label>Title <span class="req">*</span></label>
+          <input type="text" formControlName="title" placeholder="Short summary of the bug">
+        </div>
+
+        <div class="field full">
+          <label>Description <span class="req">*</span></label>
+          <textarea formControlName="description" placeholder="What happened? Steps to reproduce, if known."></textarea>
+        </div>
+
+        <div class="field full">
+          <label>Expected Behavior</label>
+          <textarea formControlName="expectedBehavior" placeholder="What should have happened instead?"></textarea>
+        </div>
+
+        <div class="field">
+          <label>Affected Build <span class="req">*</span></label>
+          <input type="text" formControlName="affectedBuild" placeholder="e.g. 2.4.1">
+        </div>
+
+        <div class="field">
+          <label>Variant <span class="req">*</span></label>
+          <select formControlName="variantId">
+            <option [ngValue]="null" disabled>Select variant</option>
+            @for (v of variants(); track v.id) {
+              <option [ngValue]="v.id">{{ v.name }}</option>
+            }
+          </select>
+        </div>
+
+        <div class="field">
+          <label>Impact <span class="req">*</span></label>
+          <div class="select-preview">
+            @if (impactPreview) {
+              <div class="preview-icon" [style.background]="impactPreview.color + '22'" [style.color]="impactPreview.color">
+                <app-icon [name]="impactPreview.icon" [size]="15" />
+              </div>
+            }
+            <select formControlName="impactId">
+              <option [ngValue]="null" disabled>Select impact</option>
+              @for (i of impacts(); track i.id) {
+                <option [ngValue]="i.id">{{ i.name }}</option>
+              }
+            </select>
+          </div>
+        </div>
+
+        <div class="field">
+          <label>Status</label>
+          <div class="select-preview">
+            @if (statusPreview) {
+              <div class="preview-icon" [style.background]="statusPreview.color + '22'" [style.color]="statusPreview.color">
+                <app-icon [name]="statusPreview.icon" [size]="15" />
+              </div>
+            }
+            @if (isEdit) {
+              <select formControlName="statusId">
+                @for (s of statuses(); track s.id) {
+                  <option [ngValue]="s.id">{{ s.name }}</option>
+                }
+              </select>
+            } @else {
+              <div class="readonly-field">Open</div>
+            }
+          </div>
+        </div>
+
+        <div class="field">
+          <label>Reporter</label>
+          <div class="readonly-field">
+            <app-icon name="user" [size]="14" />
+            {{ isEdit ? bug()?.reporter : reporterName() }}
+          </div>
+        </div>
+
+        <div class="field">
+          <label>Responsible</label>
+          <select formControlName="responsibleId">
+            <option [ngValue]="null" disabled>Unassigned</option>
+            @for (u of users(); track u.id) {
+              <option [ngValue]="u.id">{{ u.name }}</option>
+            }
+          </select>
+        </div>
+
+        @if (isEdit) {
+          <div class="field">
+            <label>Fixed Build</label>
+            <input type="text" formControlName="fixedBuild" placeholder="— Not fixed yet —">
+          </div>
+        }
+
+        <div class="field full">
+          <label>Remarks</label>
+          <textarea formControlName="remarks" placeholder="Any additional notes"></textarea>
+        </div>
+      </div>
+
+      @if (error()) {
+        <div class="callout callout-error">
+          <app-icon name="alert-circle" [size]="16" />
+          <span>{{ error() }}</span>
+        </div>
+      }
+
+      <div class="modal-footer">
+        <button type="button" class="btn-ghost" [disabled]="submitting()" (click)="close()">Cancel</button>
+        <button type="submit" class="btn-primary" [disabled]="submitting()">
+          <app-icon name="check" [size]="14" />
+          {{ isEdit ? 'Save Changes' : 'Create Bug' }}
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
