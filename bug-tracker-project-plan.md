@@ -96,6 +96,8 @@ _(Skipped for now — will revisit once frontend auth (Stage 7) surfaces the nee
   - Via Postman
 - [x] **6.6** (Added) CRUD endpoints for Variants, Impacts, Statuses
   - GET open to any authorized user; POST/PUT/DELETE gated by `Administration` permission policy
+- [x] **6.7** (Added) Build lookup table
+  - `AffectedBuild`/`FixedBuild` on Bug changed from free-text strings to FKs into a new `Builds` table (global, not per-variant); `FixedBuildId` nullable since a bug may not be fixed yet
 
 ---
 
@@ -114,53 +116,74 @@ _(Skipped for now — will revisit once frontend auth (Stage 7) surfaces the nee
 
 ## Stage 8: Frontend — Landing Page (Basic)
 
-- [ ] **8.1** Create landing page component with a table
-- [ ] **8.2** Call "Get all bugs" API
-  - Render rows
-- [ ] **8.3** Add "New Bug" button + form
+- [x] **8.1** Create landing page component with a table
+  - Topbar, profile chip w/ dropdown, responsive table (horizontal-scroll wrapper on narrow screens)
+- [x] **8.2** Call "Get all bugs" API
+  - Render rows; full-page dimmed overlay + centered loader while loading
+- [x] **8.3** Add "New Bug" button + form
   - Wire to Create Bug API
-- [ ] **8.4** Add status dropdown per row
-  - Wire to Update Bug API
+  - Built as a shared Add/Edit modal component (reused by 8.4's edit flow); closes on Cancel/X/Esc only, not click-outside; icons via `@lucide/angular`
+- [x] **8.4** Add status dropdown per row
+  - Wire to Update Bug API; also added full Edit (click the Bug ID) reusing the same modal, since the backend Update endpoint accepts all fields, not just status
 
 ---
 
-## Stage 9: Filtering, Search, Count
+## Stage 9: Frontend — Admin Dashboard
+_(Added — not in the original plan, pulled forward ahead of Stage 10 filtering)_
 
-- [ ] **9.1** Extend "Get all bugs" endpoint (backend)
+- [x] **9.1** Add `Color`/`Icon` to Status/Impact lookup tables (backend)
+  - Migration backfills existing rows with their real values; enums now serialize as strings across the API
+- [x] **9.2** Add `Role` to `UserResponse` + `PUT /api/users/{id}/role` endpoint
+  - Administration-only; needed so the frontend can show/guard admin-only UI and promote/demote users
+- [x] **9.3** Build Admin Dashboard UI
+  - Tabs: Users, Statuses, Impacts, Variants, Affected Builds — matches provided mockup
+  - Add **and** Edit (mockup only had Add) **and** Delete for every lookup type; Status/Impact include a color picker and a curated icon-dropdown picker with live preview
+  - Self-demotion blocked (a lone Admin can't lock themselves out)
+- [x] **9.4** Guard `/admin` route to Admins only
+  - `adminGuard`; "Admin Settings" menu item only shown to Admins
+- [x] **9.5** Retired the hardcoded frontend status/impact color+icon map
+  - Table and modal now read `Color`/`Icon` straight from the database, fixing the gap where a newly-added custom status/impact would have rendered with no icon
+
+---
+
+## Stage 10: Filtering, Search, Count
+
+- [ ] **10.1** Extend "Get all bugs" endpoint (backend)
   - Accept filter query params: variant, impact, status, reporter, responsible, fixedBuild
-- [ ] **9.2** Add title/description search param (backend)
-- [ ] **9.3** Build filter bar UI (frontend)
+- [ ] **10.2** Add title/description search param (backend)
+- [ ] **10.3** Build filter bar UI (frontend)
   - Dropdowns for each filter field
-- [ ] **9.4** Build search box (frontend)
+- [ ] **10.4** Build search box (frontend)
   - Wire both to API call
-- [ ] **9.5** Add count section at top
+- [ ] **10.5** Add count section at top
   - Shows count of currently filtered results
 
 ---
 
-## Stage 10: Deployment
+## Stage 11: Deployment
 
-- [ ] **10.1** Create Azure App Service (F1) resource
+- [ ] **11.1** Create Azure App Service (F1) resource
   - Deploy backend
-- [ ] **10.2** Update backend CORS settings
+- [ ] **11.2** Update backend CORS settings
   - Allow frontend domain
-- [ ] **10.3** Create Azure Static Web App resource
+- [ ] **11.3** Create Azure Static Web App resource
   - Deploy frontend
-- [ ] **10.4** Update frontend API base URL
+- [ ] **11.4** Update frontend API base URL
   - Point to deployed backend
-- [ ] **10.5** Test end-to-end on deployed URLs
+- [ ] **11.5** Test end-to-end on deployed URLs
 
 ---
 
-## Stage 11: Polish
+## Stage 12: Polish
 
-- [ ] **11.1** Add form validation
+- [ ] **12.1** Add form validation
   - Required fields, max lengths
-- [ ] **11.2** Add basic error handling/toasts
+- [ ] **12.2** Add basic error handling/toasts
   - On API failures
-- [ ] **11.3** Add loading states/spinners
-- [ ] **11.4** Clean up UI styling
-- [ ] **11.5** Write a short README
+- [ ] **12.3** Add loading states/spinners
+  - Bug list and modal submit already covered in Stage 8/9; sweep for anything left
+- [ ] **12.4** Clean up UI styling
+- [ ] **12.5** Write a short README
   - Setup + run instructions
 
 ---
