@@ -72,9 +72,9 @@ public class BugService : IBugService
         return (ToResponse(bug), null);
     }
 
-    public async Task<List<BugResponse>> GetAllBugsAsync()
+    public async Task<List<BugResponse>> GetAllBugsAsync(BugFilterRequest filter)
     {
-        var bugs = await _db.Bugs
+        var query = _db.Bugs
             .Include(b => b.AffectedBuild)
             .Include(b => b.FixedBuild)
             .Include(b => b.Variant)
@@ -82,7 +82,45 @@ public class BugService : IBugService
             .Include(b => b.Status)
             .Include(b => b.Reporter)
             .Include(b => b.Responsible)
-            .ToListAsync();
+            .AsQueryable();
+
+        if (filter.VariantIds is { Count: > 0 })
+        {
+            query = query.Where(b => filter.VariantIds.Contains(b.VariantId));
+        }
+
+        if (filter.ImpactIds is { Count: > 0 })
+        {
+            query = query.Where(b => filter.ImpactIds.Contains(b.ImpactId));
+        }
+
+        if (filter.StatusIds is { Count: > 0 })
+        {
+            query = query.Where(b => filter.StatusIds.Contains(b.StatusId));
+        }
+
+        if (filter.ReporterIds is { Count: > 0 })
+        {
+            query = query.Where(b => filter.ReporterIds.Contains(b.ReporterId));
+        }
+
+        if (filter.ResponsibleIds is { Count: > 0 })
+        {
+            query = query.Where(b => filter.ResponsibleIds.Contains(b.ResponsibleId));
+        }
+
+        if (filter.AffectedBuildIds is { Count: > 0 })
+        {
+            query = query.Where(b => filter.AffectedBuildIds.Contains(b.AffectedBuildId));
+        }
+
+        if (!string.IsNullOrWhiteSpace(filter.Search))
+        {
+            var search = filter.Search.Trim();
+            query = query.Where(b => EF.Functions.Like(b.Title, $"%{search}%") || EF.Functions.Like(b.Description, $"%{search}%"));
+        }
+
+        var bugs = await query.ToListAsync();
 
         return bugs.Select(ToResponse).ToList();
     }

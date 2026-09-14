@@ -1,15 +1,18 @@
 import { Component, HostListener, OnInit, inject, signal } from '@angular/core';
 import { Router } from '@angular/router';
+import { FormsModule } from '@angular/forms';
 import { Icon } from '../../shared/icon/icon';
 import { Loader } from '../../shared/loader/loader';
+import { Multiselect, MultiselectOption } from '../../shared/multiselect/multiselect';
+import { Tooltip } from '../../shared/tooltip/tooltip';
 import { Auth, UserResponse } from '../../core/auth';
-import { Bug as BugService, BugResponse, UpdateBugRequest } from '../../core/bug';
+import { Bug as BugService, BugResponse, BugFilter, UpdateBugRequest } from '../../core/bug';
 import { Lookup, LookupItem, ColoredLookupItem } from '../../core/lookup';
 import { BugModal } from '../bug-modal/bug-modal';
 
 @Component({
   selector: 'app-landing',
-  imports: [Icon, Loader, BugModal],
+  imports: [FormsModule, Icon, Loader, Multiselect, Tooltip, BugModal],
   templateUrl: './landing.html',
   styleUrl: './landing.css'
 })
@@ -34,6 +37,14 @@ export class Landing implements OnInit {
   modalMode = signal<'add' | 'edit'>('add');
   editingBug = signal<BugResponse | null>(null);
 
+  selectedVariantId = signal<number | null>(null);
+  selectedImpactIds = signal<number[]>([]);
+  selectedStatusIds = signal<number[]>([]);
+  selectedReporterIds = signal<number[]>([]);
+  selectedResponsibleIds = signal<number[]>([]);
+  selectedBuildIds = signal<number[]>([]);
+  searchText = signal('');
+
   ngOnInit() {
     this.loadBugs();
     this.lookup.getVariants().subscribe((v) => this.variants.set(v));
@@ -43,10 +54,23 @@ export class Landing implements OnInit {
     this.lookup.getUsers().subscribe((u) => this.users.set(u));
   }
 
+  private buildFilter(): BugFilter {
+    const variantId = this.selectedVariantId();
+    return {
+      variantIds: variantId ? [variantId] : undefined,
+      impactIds: this.selectedImpactIds().length ? this.selectedImpactIds() : undefined,
+      statusIds: this.selectedStatusIds().length ? this.selectedStatusIds() : undefined,
+      reporterIds: this.selectedReporterIds().length ? this.selectedReporterIds() : undefined,
+      responsibleIds: this.selectedResponsibleIds().length ? this.selectedResponsibleIds() : undefined,
+      affectedBuildIds: this.selectedBuildIds().length ? this.selectedBuildIds() : undefined,
+      search: this.searchText().trim() || undefined
+    };
+  }
+
   loadBugs() {
     this.loading.set(true);
     this.loadError.set(null);
-    this.bugService.getAll().subscribe({
+    this.bugService.getAll(this.buildFilter()).subscribe({
       next: (bugs) => {
         this.bugs.set(bugs);
         this.loading.set(false);
@@ -56,6 +80,62 @@ export class Landing implements OnInit {
         this.loading.set(false);
       }
     });
+  }
+
+  onVariantChange(value: string) {
+    this.selectedVariantId.set(value === 'ALL' ? null : Number(value));
+    this.loadBugs();
+  }
+
+  applySearch() {
+    this.loadBugs();
+  }
+
+  clearFilters() {
+    this.selectedVariantId.set(null);
+    this.selectedImpactIds.set([]);
+    this.selectedStatusIds.set([]);
+    this.selectedReporterIds.set([]);
+    this.selectedResponsibleIds.set([]);
+    this.selectedBuildIds.set([]);
+    this.searchText.set('');
+    this.loadBugs();
+  }
+
+  toOptions(items: { id: number; name: string }[]): MultiselectOption[] {
+    return items.map((i) => ({ id: i.id, label: i.name }));
+  }
+
+  toUserOptions(items: UserResponse[]): MultiselectOption[] {
+    return items.map((u) => ({ id: u.id, label: u.name }));
+  }
+
+  statusDistribution(): { name: string; color: string; count: number; dashArray: string; dashOffset: number }[] {
+    const total = this.bugs().length;
+    if (total === 0) return [];
+
+    const segments = this.statuses()
+      .map((s) => ({
+        name: s.name,
+        color: s.color,
+        count: this.bugs().filter((b) => b.status === s.name).length
+      }))
+      .filter((s) => s.count > 0);
+
+    let cumulativePercent = 0;
+    return segments.map((s) => {
+      const percent = (s.count / total) * 100;
+      const dashOffset = 25 - cumulativePercent;
+      cumulativePercent += percent;
+      return { ...s, dashArray: `${percent} ${100 - percent}`, dashOffset };
+    });
+  }
+
+  donutCenterFontSize(): string {
+    const digits = this.bugs().length.toString().length;
+    if (digits <= 2) return '0.8125rem';
+    if (digits === 3) return '0.6875rem';
+    return '0.5625rem';
   }
 
   initials(name: string | undefined): string {

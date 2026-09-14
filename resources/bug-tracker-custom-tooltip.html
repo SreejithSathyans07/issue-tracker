@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Bug Tracker — Custom Tooltip</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/feather-icons/4.29.0/feather.min.js"></script>
+<style>
+  :root {
+    --bg: #F5F5F2; --surface: #FFFFFF; --border: #E4E4E1; --ink: #1C1E21; --ink-soft: #6B6E73;
+    --accent: #3B4B6B; --impact-critical:#EF4444; --impact-blocker:#7F1D1D;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--ink); font-family: 'IBM Plex Sans', sans-serif; font-size: 14px; padding: 28px; }
+  .mono { font-family: 'IBM Plex Mono', monospace; }
+  h1 { font-size: 18px; margin: 0 0 4px; }
+  .page-sub { font-size: 12.5px; color: var(--ink-soft); margin-bottom: 20px; }
+
+  table { width: 100%; max-width: 900px; border-collapse: collapse; background: var(--surface); border: 1px solid var(--border); border-radius: 10px; overflow: hidden; box-shadow: 0 1px 3px rgba(20,20,20,0.03); }
+  thead th { background: #FAFAF9; text-align: left; padding: 10px 12px; font-size: 11px; font-weight: 700; color: var(--ink-soft); border-bottom: 1px solid var(--border); white-space: nowrap; }
+  tbody td { padding: 11px 12px; border-bottom: 1px solid var(--border); vertical-align: top; }
+  tbody tr:last-child td { border-bottom: none; }
+  tbody tr:hover { background: #FAFBFC; }
+
+  .bug-id { color: var(--ink-soft); }
+  .bug-title { font-weight: 600; margin-bottom: 3px; }
+
+  /* Truncated text that triggers the tooltip */
+  .truncatable {
+    color: var(--ink-soft); font-size: 12.5px; max-width: 260px;
+    display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;
+    overflow: hidden; cursor: default; position: relative;
+  }
+
+  /* Custom tooltip */
+  .tooltip {
+    position: fixed;
+    max-width: 300px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    box-shadow: 0 8px 24px rgba(20,20,20,0.14);
+    padding: 10px 13px;
+    font-size: 12.5px;
+    line-height: 1.5;
+    color: var(--ink);
+    z-index: 100;
+    display: none;
+    pointer-events: none;
+  }
+  .tooltip.show { display: block; }
+  .tooltip::before {
+    content: "";
+    position: absolute;
+    left: -6px;
+    top: 14px;
+    width: 11px; height: 11px;
+    background: var(--surface);
+    border-left: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+    transform: rotate(45deg);
+  }
+  .tooltip .tt-label {
+    font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em;
+    color: var(--accent); margin-bottom: 4px; display: block;
+  }
+</style>
+</head>
+<body>
+
+<h1>Bug Description — Styled Tooltip</h1>
+<div class="page-sub">Long text is clamped to 2 lines in the cell. Hover the truncated text to see the full description in a matching tooltip instead of the browser default.</div>
+
+<table>
+  <thead>
+    <tr>
+      <th>Bug ID</th>
+      <th>Title / Description</th>
+      <th>Affected Build</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td class="bug-id mono">BUG-1</td>
+      <td>
+        <div class="bug-title">Login button unresponsive on Safari</div>
+        <div class="truncatable" data-full="Clicking the login button does nothing on Safari 17, works fine on Chrome and Firefox. Confirmed on two different machines running macOS Sonoma. No console errors are shown, and the network tab shows no request being fired at all when the button is clicked.">
+          Clicking the login button does nothing on Safari 17, works fine on Chrome and Firefox. Confirmed on two different machines running macOS Sonoma. No console errors are shown, and the network tab shows no request being fired at all when the button is clicked.
+        </div>
+      </td>
+      <td class="mono">2.3.0</td>
+    </tr>
+    <tr>
+      <td class="bug-id mono">BUG-3</td>
+      <td>
+        <div class="bug-title">Screenshot is not getting saved</div>
+        <div class="truncatable" data-full="The screenshot operation in the service ticket is not getting stored in the folder location on the computer. Expected the file to appear under Documents/Screenshots but the folder remains empty after multiple attempts, even after restarting the app.">
+          The screenshot operation in the service ticket is not getting stored in the folder location on the computer. Expected the file to appear under Documents/Screenshots but the folder remains empty after multiple attempts, even after restarting the app.
+        </div>
+      </td>
+      <td class="mono">2.3.0</td>
+    </tr>
+    <tr>
+      <td class="bug-id mono">BUG-4</td>
+      <td>
+        <div class="bug-title">Adding a proper title</div>
+        <div class="truncatable" data-full="No matter what I do, the application is not getting closed properly when I click the close button on the top right. It just minimizes to the taskbar instead of exiting fully, and I have to end the task manually from Task Manager.">
+          No matter what I do, the application is not getting closed properly when I click the close button on the top right. It just minimizes to the taskbar instead of exiting fully, and I have to end the task manually from Task Manager.
+        </div>
+      </td>
+      <td class="mono">2.3.0</td>
+    </tr>
+  </tbody>
+</table>
+
+<div class="tooltip" id="tooltip">
+  <span class="tt-label">Full description</span>
+  <span id="tooltipText"></span>
+</div>
+
+<script>
+const tooltip = document.getElementById('tooltip');
+const tooltipText = document.getElementById('tooltipText');
+
+document.querySelectorAll('.truncatable').forEach(el => {
+  el.addEventListener('mouseenter', () => {
+    tooltipText.textContent = el.dataset.full;
+    tooltip.classList.add('show');
+    positionTooltip(el);
+  });
+  el.addEventListener('mouseleave', () => {
+    tooltip.classList.remove('show');
+  });
+});
+
+function positionTooltip(el) {
+  const rect = el.getBoundingClientRect();
+  tooltip.style.left = (rect.right + 14) + 'px';
+  tooltip.style.top = rect.top + 'px';
+
+  // Flip to the left if it would overflow the viewport on the right
+  requestAnimationFrame(() => {
+    const tRect = tooltip.getBoundingClientRect();
+    if (tRect.right > window.innerWidth - 12) {
+      tooltip.style.left = (rect.left - tRect.width - 14) + 'px';
+      tooltip.querySelector ? null : null;
+    }
+  });
+}
+
+feather.replace();
+</script>
+
+</body>
+</html>

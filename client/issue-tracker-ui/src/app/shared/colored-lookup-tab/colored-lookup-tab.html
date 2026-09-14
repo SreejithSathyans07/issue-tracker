@@ -6,15 +6,16 @@
     <input
       type="text"
       [placeholder]="placeholder()"
-      [(ngModel)]="newName"
+      [ngModel]="newName()"
+      (ngModelChange)="newName.set($event)"
       (keydown.enter)="submitNew()"
     >
-    <select [(ngModel)]="newColor">
+    <select [ngModel]="newColor()" (ngModelChange)="newColor.set($event)">
       @for (c of colorOptions(); track c.value) {
         <option [value]="c.value">{{ c.label }}</option>
       }
     </select>
-    <select [(ngModel)]="newIcon">
+    <select [ngModel]="newIcon()" (ngModelChange)="newIcon.set($event)">
       @for (i of iconOptions; track i) {
         <option [value]="i">{{ i }}</option>
       }
@@ -42,13 +43,20 @@
       @for (item of items(); track item.id) {
         <div class="item-row">
           @if (editingId() === item.id) {
-            <input type="text" class="edit-input" [(ngModel)]="editName" (keydown.enter)="submitEdit(item.id)" (keydown.escape)="cancelEdit()">
-            <select [(ngModel)]="editColor">
+            <input
+              type="text"
+              class="edit-input"
+              [ngModel]="editName()"
+              (ngModelChange)="editName.set($event)"
+              (keydown.enter)="submitEdit(item.id)"
+              (keydown.escape)="cancelEdit()"
+            >
+            <select [ngModel]="editColor()" (ngModelChange)="editColor.set($event)">
               @for (c of colorOptions(); track c.value) {
                 <option [value]="c.value">{{ c.label }}</option>
               }
             </select>
-            <select [(ngModel)]="editIcon">
+            <select [ngModel]="editIcon()" (ngModelChange)="editIcon.set($event)">
               @for (i of iconOptions; track i) {
                 <option [value]="i">{{ i }}</option>
               }

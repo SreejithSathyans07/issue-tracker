@@ -1,7 +1,17 @@
 import { Injectable, inject } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../../environments/environment';
+
+export interface BugFilter {
+  variantIds?: number[];
+  impactIds?: number[];
+  statusIds?: number[];
+  reporterIds?: number[];
+  responsibleIds?: number[];
+  affectedBuildIds?: number[];
+  search?: string;
+}
 
 export interface BugResponse {
   bugId: number;
@@ -46,8 +56,20 @@ export interface UpdateBugRequest {
 export class Bug {
   private http = inject(HttpClient);
 
-  getAll(): Observable<BugResponse[]> {
-    return this.http.get<BugResponse[]>(`${environment.apiBaseUrl}/bugs`);
+  getAll(filter?: BugFilter): Observable<BugResponse[]> {
+    let params = new HttpParams();
+
+    for (const [key, value] of Object.entries(filter ?? {})) {
+      if (Array.isArray(value)) {
+        for (const id of value) {
+          params = params.append(key, id);
+        }
+      } else if (value) {
+        params = params.set(key, value);
+      }
+    }
+
+    return this.http.get<BugResponse[]>(`${environment.apiBaseUrl}/bugs`, { params });
   }
 
   create(request: CreateBugRequest): Observable<BugResponse> {

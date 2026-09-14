@@ -34,9 +34,9 @@ public class BugsController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<ActionResult<List<BugResponse>>> GetAllBugs()
+    public async Task<ActionResult<List<BugResponse>>> GetAllBugs([FromQuery] BugFilterRequest filter)
     {
-        var bugs = await _bugService.GetAllBugsAsync();
+        var bugs = await _bugService.GetAllBugsAsync(filter);
         return Ok(bugs);
     }
 

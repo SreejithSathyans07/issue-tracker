@@ -9,3 +9,55 @@ html, body {
   margin: 0;
   height: 100%;
 }
+
+.app-tooltip {
+  position: fixed;
+  z-index: 1000;
+  max-width: 300px;
+  background: #FFFFFF;
+  border: 1px solid #E4E4E1;
+  color: #1C1E21;
+  font-family: 'IBM Plex Sans', sans-serif;
+  font-size: 13px;
+  line-height: 1.5;
+  padding: 10px 13px;
+  border-radius: 8px;
+  box-shadow: 0 8px 24px rgba(20, 20, 20, 0.14);
+  pointer-events: none;
+  animation: app-tooltip-in 0.1s ease-out;
+}
+.app-tooltip-label {
+  display: block;
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: #3B4B6B;
+  margin-bottom: 4px;
+}
+.app-tooltip-right::before,
+.app-tooltip-left::before {
+  content: '';
+  position: absolute;
+  top: 14px;
+  width: 11px;
+  height: 11px;
+  background: #FFFFFF;
+}
+.app-tooltip-right::before {
+  left: -6px;
+  border-left: 1px solid #E4E4E1;
+  border-bottom: 1px solid #E4E4E1;
+  transform: rotate(45deg);
+}
+.app-tooltip-left::before {
+  right: -6px;
+  border-right: 1px solid #E4E4E1;
+  border-top: 1px solid #E4E4E1;
+  transform: rotate(45deg);
+}
+
+@keyframes app-tooltip-in {
+  from { opacity: 0; transform: translateY(-2px); }
+  to { opacity: 1; transform: translateY(0); }
+}

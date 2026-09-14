@@ -1,0 +1,29 @@
+<div class="ms">
+  <button type="button" class="ms-btn" (click)="toggleOpen($event)">
+    <app-icon name="chevron-down" [size]="12" />
+    {{ label() }}
+    @if (selected().length > 0) {
+      <span class="count">{{ selected().length }}</span>
+    }
+  </button>
+
+  @if (open()) {
+    <div class="ms-panel" (click)="$event.stopPropagation()">
+      @if (options().length === 0) {
+        <div class="ms-empty">No options</div>
+      } @else {
+        <label class="select-all">
+          <input type="checkbox" [checked]="allSelected" (change)="toggleAll()">
+          Select all
+        </label>
+        <div class="ms-divider"></div>
+        @for (opt of options(); track opt.id) {
+          <label>
+            <input type="checkbox" [checked]="isChecked(opt.id)" (change)="toggleOption(opt.id)">
+            {{ opt.label }}
+          </label>
+        }
+      }
+    </div>
+  }
+</div>

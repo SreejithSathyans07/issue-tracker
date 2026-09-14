@@ -20,111 +20,115 @@
 
     <form [formGroup]="form" (ngSubmit)="submit()">
       <div class="modal-body">
-        <div class="field full">
-          <label>Title <span class="req">*</span></label>
-          <input type="text" formControlName="title" placeholder="Short summary of the bug">
-        </div>
-
-        <div class="field full">
-          <label>Description <span class="req">*</span></label>
-          <textarea formControlName="description" placeholder="What happened? Steps to reproduce, if known."></textarea>
-        </div>
-
-        <div class="field full">
-          <label>Expected Behavior</label>
-          <textarea formControlName="expectedBehavior" placeholder="What should have happened instead?"></textarea>
-        </div>
-
-        <div class="field">
-          <label>Affected Build <span class="req">*</span></label>
-          <select formControlName="affectedBuildId">
-            <option [ngValue]="null" disabled>Select build</option>
-            @for (b of builds(); track b.id) {
-              <option [ngValue]="b.id">{{ b.name }}</option>
-            }
-          </select>
-        </div>
-
-        <div class="field">
-          <label>Variant <span class="req">*</span></label>
-          <select formControlName="variantId">
-            <option [ngValue]="null" disabled>Select variant</option>
-            @for (v of variants(); track v.id) {
-              <option [ngValue]="v.id">{{ v.name }}</option>
-            }
-          </select>
-        </div>
-
-        <div class="field">
-          <label>Impact <span class="req">*</span></label>
-          <div class="select-preview">
-            @if (impactPreview) {
-              <div class="preview-icon" [style.background]="impactPreview.color + '22'" [style.color]="impactPreview.color">
-                <app-icon [name]="impactPreview.icon" [size]="15" />
-              </div>
-            }
-            <select formControlName="impactId">
-              <option [ngValue]="null" disabled>Select impact</option>
-              @for (i of impacts(); track i.id) {
-                <option [ngValue]="i.id">{{ i.name }}</option>
-              }
-            </select>
-          </div>
-        </div>
-
-        <div class="field">
-          <label>Status</label>
-          <div class="select-preview">
-            @if (statusPreview) {
-              <div class="preview-icon" [style.background]="statusPreview.color + '22'" [style.color]="statusPreview.color">
-                <app-icon [name]="statusPreview.icon" [size]="15" />
-              </div>
-            }
-            @if (isEdit) {
-              <select formControlName="statusId">
-                @for (s of statuses(); track s.id) {
-                  <option [ngValue]="s.id">{{ s.name }}</option>
-                }
-              </select>
-            } @else {
-              <div class="readonly-field">Open</div>
-            }
-          </div>
-        </div>
-
-        <div class="field">
-          <label>Reporter</label>
-          <div class="readonly-field">
-            <app-icon name="user" [size]="14" />
-            {{ isEdit ? bug()?.reporter : reporterName() }}
-          </div>
-        </div>
-
-        <div class="field">
-          <label>Responsible</label>
-          <select formControlName="responsibleId">
-            <option [ngValue]="null" disabled>Unassigned</option>
-            @for (u of users(); track u.id) {
-              <option [ngValue]="u.id">{{ u.name }}</option>
-            }
-          </select>
-        </div>
-
-        @if (isEdit) {
+        <div class="modal-left">
           <div class="field">
-            <label>Fixed Build</label>
-            <select formControlName="fixedBuildId">
-              <option [ngValue]="null">— Not fixed yet —</option>
+            <label>Title <span class="req">*</span></label>
+            <input type="text" formControlName="title" placeholder="Short summary of the bug">
+          </div>
+
+          <div class="field">
+            <label>Description <span class="req">*</span></label>
+            <textarea class="tall" formControlName="description" placeholder="What happened? Steps to reproduce, if known."></textarea>
+          </div>
+
+          <div class="field">
+            <label>Expected Behavior</label>
+            <textarea class="tall" formControlName="expectedBehavior" placeholder="What should have happened instead?"></textarea>
+          </div>
+
+          <div class="field">
+            <label>Remarks</label>
+            <textarea formControlName="remarks" placeholder="Any additional notes"></textarea>
+          </div>
+        </div>
+
+        <div class="modal-right">
+          <div class="field">
+            <label>Affected Build <span class="req">*</span></label>
+            <select formControlName="affectedBuildId">
+              <option [ngValue]="null" disabled>Select build</option>
               @for (b of builds(); track b.id) {
                 <option [ngValue]="b.id">{{ b.name }}</option>
               }
             </select>
           </div>
-        }
 
-        <div class="field full">
-          <label>Remarks</label>
-          <textarea formControlName="remarks" placeholder="Any additional notes"></textarea>
+          <div class="field">
+            <label>Variant <span class="req">*</span></label>
+            <select formControlName="variantId">
+              <option [ngValue]="null" disabled>Select variant</option>
+              @for (v of variants(); track v.id) {
+                <option [ngValue]="v.id">{{ v.name }}</option>
+              }
+            </select>
+          </div>
+
+          <div class="field">
+            <label>Impact <span class="req">*</span></label>
+            <div class="select-preview">
+              @if (impactPreview) {
+                <div class="preview-icon" [style.background]="impactPreview.color + '22'" [style.color]="impactPreview.color">
+                  <app-icon [name]="impactPreview.icon" [size]="15" />
+                </div>
+              }
+              <select formControlName="impactId">
+                <option [ngValue]="null" disabled>Select impact</option>
+                @for (i of impacts(); track i.id) {
+                  <option [ngValue]="i.id">{{ i.name }}</option>
+                }
+              </select>
+            </div>
+          </div>
+
+          <div class="field">
+            <label>Status</label>
+            <div class="select-preview">
+              @if (statusPreview) {
+                <div class="preview-icon" [style.background]="statusPreview.color + '22'" [style.color]="statusPreview.color">
+                  <app-icon [name]="statusPreview.icon" [size]="15" />
+                </div>
+              }
+              @if (isEdit) {
+                <select formControlName="statusId">
+                  @for (s of statuses(); track s.id) {
+                    <option [ngValue]="s.id">{{ s.name }}</option>
+                  }
+                </select>
+              } @else {
+                <div class="readonly-field">Open</div>
+              }
+            </div>
+          </div>
+
+          <div class="field">
+            <label>Reporter</label>
+            <div class="readonly-field">
+              <app-icon name="user" [size]="14" />
+              {{ isEdit ? bug()?.reporter : reporterName() }}
+            </div>
+          </div>
+
+          <div class="field">
+            <label>Responsible</label>
+            <select formControlName="responsibleId">
+              <option [ngValue]="null" disabled>Unassigned</option>
+              @for (u of users(); track u.id) {
+                <option [ngValue]="u.id">{{ u.name }}</option>
+              }
+            </select>
+          </div>
+
+          @if (isEdit) {
+            <div class="field">
+              <label>Fixed Build</label>
+              <select formControlName="fixedBuildId">
+                <option [ngValue]="null">— Not fixed yet —</option>
+                @for (b of builds(); track b.id) {
+                  <option [ngValue]="b.id">{{ b.name }}</option>
+                }
+              </select>
+            </div>
+          }
         </div>
       </div>
 

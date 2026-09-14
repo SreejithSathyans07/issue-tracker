@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Summary Bar — 5 Compact Alternatives</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/feather-icons/4.29.0/feather.min.js"></script>
+<style>
+  :root {
+    --bg: #F5F5F2; --surface: #FFFFFF; --border: #E4E4E1; --ink: #1C1E21; --ink-soft: #6B6E73;
+    --accent: #3B4B6B;
+    --s-open:#2563EB; --s-prog:#D97706; --s-test:#7C3AED; --s-res:#059669;
+    --s-closed:#6B7280; --s-hold:#B45309; --s-support:#DC2626; --s-notissue:#9CA3AF;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--ink); font-family: 'IBM Plex Sans', sans-serif; font-size: 14px; padding: 28px; }
+  .mono { font-family: 'IBM Plex Mono', monospace; }
+  h1 { font-size: 18px; margin: 0 0 4px; }
+  .page-sub { font-size: 12.5px; color: var(--ink-soft); margin-bottom: 28px; }
+
+  .option { margin-bottom: 30px; }
+  .option-label { font-size: 11.5px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; color: var(--accent); margin-bottom: 6px; }
+  .option-desc { font-size: 12.5px; color: var(--ink-soft); margin-bottom: 10px; }
+
+  .card { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 12px 16px; box-shadow: 0 1px 3px rgba(20,20,20,0.03); }
+
+  /* --- 1: Bar only, tooltip on hover --- */
+  .bar-only { display: flex; align-items: center; gap: 14px; }
+  .bar-only .total { font-family: 'IBM Plex Mono', monospace; font-weight: 700; font-size: 17px; color: var(--accent); white-space: nowrap; }
+  .bar-only .bar { flex: 1; display: flex; height: 14px; border-radius: 7px; overflow: hidden; }
+  .bar-only .seg { height: 100%; cursor: default; }
+
+  /* --- 2: Icon-only legend chips, single row --- */
+  .icon-row { display: flex; align-items: center; gap: 16px; flex-wrap: nowrap; overflow-x: auto; }
+  .icon-row .total { font-family: 'IBM Plex Mono', monospace; font-weight: 700; font-size: 15px; color: var(--accent); border-right: 1px solid var(--border); padding-right: 14px; white-space: nowrap; }
+  .icon-chip { display: flex; align-items: center; gap: 5px; font-size: 12.5px; white-space: nowrap; }
+  .icon-chip svg { width: 14px; height: 14px; }
+  .icon-chip .n { font-family: 'IBM Plex Mono', monospace; font-weight: 700; }
+
+  /* --- 3: Donut + inline legend --- */
+  .donut-row { display: flex; align-items: center; gap: 16px; }
+  .donut-row svg.donut { flex-shrink: 0; }
+  .donut-center-num { font-family: 'IBM Plex Mono', monospace; font-weight: 700; font-size: 13px; }
+  .donut-legend { display: flex; flex-wrap: wrap; gap: 8px 14px; font-size: 12px; }
+  .donut-legend .item { display: flex; align-items: center; gap: 5px; color: var(--ink-soft); }
+  .donut-legend .swatch { width: 7px; height: 7px; border-radius: 2px; }
+  .donut-legend .n { font-family: 'IBM Plex Mono', monospace; font-weight: 700; color: var(--ink); }
+
+  /* --- 4: Plain text line, colored keywords --- */
+  .text-line { font-size: 13px; line-height: 1.7; }
+  .text-line .total { font-weight: 700; color: var(--ink); }
+  .text-line .stat { font-weight: 600; }
+
+  /* --- 5: Collapsed by default --- */
+  .collapse-row { display: flex; align-items: center; justify-content: space-between; cursor: pointer; }
+  .collapse-row .left { display: flex; align-items: center; gap: 10px; }
+  .collapse-row .total { font-family: 'IBM Plex Mono', monospace; font-weight: 700; font-size: 15px; color: var(--accent); }
+  .collapse-row .hint { font-size: 12px; color: var(--ink-soft); }
+  .collapse-row .chev { width: 15px; height: 15px; color: var(--ink-soft); transition: transform 0.15s; }
+  .collapse-row.open .chev { transform: rotate(180deg); }
+  .collapse-body { display: none; margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--border); }
+  .collapse-body.show { display: block; }
+  .collapse-bar { display: flex; height: 8px; border-radius: 4px; overflow: hidden; margin-bottom: 8px; }
+  .collapse-legend { display: flex; flex-wrap: wrap; gap: 10px 14px; font-size: 12px; color: var(--ink-soft); }
+  .collapse-legend .swatch { width: 7px; height: 7px; border-radius: 2px; display: inline-block; margin-right: 5px; }
+  .collapse-legend .n { font-family: 'IBM Plex Mono', monospace; font-weight: 700; color: var(--ink); }
+</style>
+</head>
+<body>
+
+<h1>Bug Status Summary — Compact Alternatives</h1>
+<div class="page-sub">Same 10-bug dataset as your screenshot, shown 5 different ways. All fit in a single row (except #5, which expands on click).</div>
+
+<!-- OPTION 1 -->
+<div class="option">
+  <div class="option-label">Option 1 — Bar only, hover for detail</div>
+  <div class="option-desc">Drop the legend entirely. Hover any segment to see its count/name in a tooltip. ~40px tall.</div>
+  <div class="card">
+    <div class="bar-only">
+      <span class="total">10</span>
+      <div class="bar">
+        <div class="seg" style="width:20%;background:var(--s-open)" title="Open: 2"></div>
+        <div class="seg" style="width:10%;background:var(--s-prog)" title="In Progress: 1"></div>
+        <div class="seg" style="width:10%;background:var(--s-test)" title="In Test: 1"></div>
+        <div class="seg" style="width:20%;background:var(--s-res)" title="Resolved: 2"></div>
+        <div class="seg" style="width:10%;background:var(--s-closed)" title="Closed: 1"></div>
+        <div class="seg" style="width:10%;background:var(--s-hold)" title="On Hold: 1"></div>
+        <div class="seg" style="width:10%;background:var(--s-support)" title="Needs Support: 1"></div>
+        <div class="seg" style="width:10%;background:var(--s-notissue)" title="Not an issue: 1"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- OPTION 2 -->
+<div class="option">
+  <div class="option-label">Option 2 — Icon-only chips, single row</div>
+  <div class="option-desc">Same icons as your table badges, no bar. Status name shows on hover (title attribute). Scrolls horizontally only if the window is very narrow.</div>
+  <div class="card">
+    <div class="icon-row">
+      <span class="total">10 bugs</span>
+      <span class="icon-chip" style="color:var(--s-open)" title="Open"><i data-feather="circle"></i><span class="n">2</span></span>
+      <span class="icon-chip" style="color:var(--s-prog)" title="In Progress"><i data-feather="refresh-cw"></i><span class="n">1</span></span>
+      <span class="icon-chip" style="color:var(--s-test)" title="In Test"><i data-feather="activity"></i><span class="n">1</span></span>
+      <span class="icon-chip" style="color:var(--s-res)" title="Resolved"><i data-feather="check-circle"></i><span class="n">2</span></span>
+      <span class="icon-chip" style="color:var(--s-closed)" title="Closed"><i data-feather="x-circle"></i><span class="n">1</span></span>
+      <span class="icon-chip" style="color:var(--s-hold)" title="On Hold"><i data-feather="pause-circle"></i><span class="n">1</span></span>
+      <span class="icon-chip" style="color:var(--s-support)" title="Needs Support"><i data-feather="life-buoy"></i><span class="n">1</span></span>
+      <span class="icon-chip" style="color:var(--s-notissue)" title="Not an issue"><i data-feather="slash"></i><span class="n">1</span></span>
+    </div>
+  </div>
+</div>
+
+<!-- OPTION 3 -->
+<div class="option">
+  <div class="option-label">Option 3 — Small donut + inline legend</div>
+  <div class="option-desc">A compact ring chart replaces the bar. Legend sits beside it and wraps if needed, but the whole block stays under ~70px tall.</div>
+  <div class="card">
+    <div class="donut-row">
+      <svg class="donut" width="56" height="56" viewBox="0 0 42 42">
+        <circle cx="21" cy="21" r="15.9" fill="transparent" stroke="#F0F0EE" stroke-width="6"></circle>
+        <circle cx="21" cy="21" r="15.9" fill="transparent" stroke="var(--s-open)" stroke-width="6" stroke-dasharray="20 80" stroke-dashoffset="25"></circle>
+        <circle cx="21" cy="21" r="15.9" fill="transparent" stroke="var(--s-prog)" stroke-width="6" stroke-dasharray="10 90" stroke-dashoffset="5"></circle>
+        <circle cx="21" cy="21" r="15.9" fill="transparent" stroke="var(--s-test)" stroke-width="6" stroke-dasharray="10 90" stroke-dashoffset="-5"></circle>
+        <circle cx="21" cy="21" r="15.9" fill="transparent" stroke="var(--s-res)" stroke-width="6" stroke-dasharray="20 80" stroke-dashoffset="-15"></circle>
+        <circle cx="21" cy="21" r="15.9" fill="transparent" stroke="var(--s-closed)" stroke-width="6" stroke-dasharray="10 90" stroke-dashoffset="-35"></circle>
+        <circle cx="21" cy="21" r="15.9" fill="transparent" stroke="var(--s-hold)" stroke-width="6" stroke-dasharray="10 90" stroke-dashoffset="-45"></circle>
+        <circle cx="21" cy="21" r="15.9" fill="transparent" stroke="var(--s-support)" stroke-width="6" stroke-dasharray="10 90" stroke-dashoffset="-55"></circle>
+        <circle cx="21" cy="21" r="15.9" fill="transparent" stroke="var(--s-notissue)" stroke-width="6" stroke-dasharray="10 90" stroke-dashoffset="-65"></circle>
+        <text x="21" y="24" text-anchor="middle" class="donut-center-num" fill="var(--ink)">10</text>
+      </svg>
+      <div class="donut-legend">
+        <span class="item"><span class="swatch" style="background:var(--s-open)"></span>Open <span class="n">2</span></span>
+        <span class="item"><span class="swatch" style="background:var(--s-prog)"></span>In Progress <span class="n">1</span></span>
+        <span class="item"><span class="swatch" style="background:var(--s-test)"></span>In Test <span class="n">1</span></span>
+        <span class="item"><span class="swatch" style="background:var(--s-res)"></span>Resolved <span class="n">2</span></span>
+        <span class="item"><span class="swatch" style="background:var(--s-closed)"></span>Closed <span class="n">1</span></span>
+        <span class="item"><span class="swatch" style="background:var(--s-hold)"></span>On Hold <span class="n">1</span></span>
+        <span class="item"><span class="swatch" style="background:var(--s-support)"></span>Needs Support <span class="n">1</span></span>
+        <span class="item"><span class="swatch" style="background:var(--s-notissue)"></span>Not an issue <span class="n">1</span></span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- OPTION 4 -->
+<div class="option">
+  <div class="option-label">Option 4 — Plain text line, no shapes</div>
+  <div class="option-desc">No bar, no icons — just a single sentence with each status colored to match its badge elsewhere in the app. The most compact option (~24px tall).</div>
+  <div class="card">
+    <div class="text-line">
+      <span class="total">10 bugs</span> —
+      <span class="stat" style="color:var(--s-open)">2 Open</span>,
+      <span class="stat" style="color:var(--s-prog)">1 In Progress</span>,
+      <span class="stat" style="color:var(--s-test)">1 In Test</span>,
+      <span class="stat" style="color:var(--s-res)">2 Resolved</span>,
+      <span class="stat" style="color:var(--s-closed)">1 Closed</span>,
+      <span class="stat" style="color:var(--s-hold)">1 On Hold</span>,
+      <span class="stat" style="color:var(--s-support)">1 Needs Support</span>,
+      <span class="stat" style="color:var(--s-notissue)">1 Not an issue</span>
+    </div>
+  </div>
+</div>
+
+<!-- OPTION 5 -->
+<div class="option">
+  <div class="option-label">Option 5 — Collapsed by default, expands on click</div>
+  <div class="option-desc">Default state is a single line (~24px). Click to reveal the full bar + legend, click again to collapse. Best when vertical space matters more than always-visible detail.</div>
+  <div class="card">
+    <div class="collapse-row" id="collapseRow" onclick="toggleCollapse()">
+      <div class="left">
+        <span class="total">10 bugs shown</span>
+        <span class="hint">Click to see status breakdown</span>
+      </div>
+      <i data-feather="chevron-down" class="chev"></i>
+    </div>
+    <div class="collapse-body" id="collapseBody">
+      <div class="collapse-bar">
+        <div style="width:20%;background:var(--s-open)"></div>
+        <div style="width:10%;background:var(--s-prog)"></div>
+        <div style="width:10%;background:var(--s-test)"></div>
+        <div style="width:20%;background:var(--s-res)"></div>
+        <div style="width:10%;background:var(--s-closed)"></div>
+        <div style="width:10%;background:var(--s-hold)"></div>
+        <div style="width:10%;background:var(--s-support)"></div>
+        <div style="width:10%;background:var(--s-notissue)"></div>
+      </div>
+      <div class="collapse-legend">
+        <span><span class="swatch" style="background:var(--s-open)"></span>Open <span class="n">2</span></span>
+        <span><span class="swatch" style="background:var(--s-prog)"></span>In Progress <span class="n">1</span></span>
+        <span><span class="swatch" style="background:var(--s-test)"></span>In Test <span class="n">1</span></span>
+        <span><span class="swatch" style="background:var(--s-res)"></span>Resolved <span class="n">2</span></span>
+        <span><span class="swatch" style="background:var(--s-closed)"></span>Closed <span class="n">1</span></span>
+        <span><span class="swatch" style="background:var(--s-hold)"></span>On Hold <span class="n">1</span></span>
+        <span><span class="swatch" style="background:var(--s-support)"></span>Needs Support <span class="n">1</span></span>
+        <span><span class="swatch" style="background:var(--s-notissue)"></span>Not an issue <span class="n">1</span></span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+function toggleCollapse() {
+  document.getElementById('collapseRow').classList.toggle('open');
+  document.getElementById('collapseBody').classList.toggle('show');
+}
+feather.replace();
+</script>
+
+</body>
+</html>

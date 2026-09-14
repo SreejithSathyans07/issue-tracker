@@ -6,7 +6,8 @@
     <input
       type="text"
       [placeholder]="placeholder()"
-      [(ngModel)]="newName"
+      [ngModel]="newName()"
+      (ngModelChange)="newName.set($event)"
       (keydown.enter)="submitNew()"
     >
     <button class="btn-primary" (click)="submitNew()">
@@ -32,7 +33,8 @@
             <input
               type="text"
               class="edit-input"
-              [(ngModel)]="editingName"
+              [ngModel]="editingName()"
+              (ngModelChange)="editingName.set($event)"
               (keydown.enter)="submitEdit(item.id)"
               (keydown.escape)="cancelEdit()"
             >

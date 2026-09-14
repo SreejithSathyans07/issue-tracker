@@ -4,6 +4,16 @@
     <div class="subtitle">Track and resolve issues across every build variant</div>
   </div>
   <div class="right">
+    <div class="variant-pill">
+      <app-icon name="layers" [size]="14" />
+      <select [value]="selectedVariantId() ?? 'ALL'" (change)="onVariantChange($any($event.target).value)">
+        <option value="ALL">All Variants</option>
+        @for (v of variants(); track v.id) {
+          <option [value]="v.id">{{ v.name }}</option>
+        }
+      </select>
+    </div>
+
     <button class="btn-primary" (click)="openAddModal()">
       <app-icon name="plus" [size]="14" />
       New Bug
@@ -35,6 +45,85 @@
   @if (loadError()) {
     <div class="empty-state">{{ loadError() }}</div>
   } @else {
+    <div class="summary">
+      @if (bugs().length > 0) {
+        <svg class="donut" width="68" height="68" viewBox="0 0 42 42">
+          <circle cx="21" cy="21" r="15.9" fill="transparent" stroke="#F0F0EE" stroke-width="6"></circle>
+          @for (s of statusDistribution(); track s.name) {
+            <circle
+              cx="21" cy="21" r="15.9" fill="transparent"
+              [attr.stroke]="s.color" stroke-width="6"
+              [attr.stroke-dasharray]="s.dashArray"
+              [attr.stroke-dashoffset]="s.dashOffset"
+            ></circle>
+          }
+          <text x="21" y="24" text-anchor="middle" class="donut-center-num" [style.font-size]="donutCenterFontSize()">{{ bugs().length }}</text>
+        </svg>
+        <div class="donut-legend">
+          @for (s of statusDistribution(); track s.name) {
+            <span class="item">
+              <span class="swatch" [style.background]="s.color"></span>
+              {{ s.name }} <span class="num">{{ s.count }}</span>
+            </span>
+          }
+        </div>
+      } @else {
+        <span class="total-label">0 bugs</span>
+        <span class="empty-msg">No bugs match current filters.</span>
+      }
+    </div>
+
+    <div class="filter-bar">
+      <input
+        type="text"
+        class="search-box"
+        placeholder="Search title/description..."
+        [ngModel]="searchText()"
+        (ngModelChange)="searchText.set($event)"
+        (keydown.enter)="applySearch()"
+      >
+      <app-multiselect
+        label="Impact"
+        [options]="toOptions(impacts())"
+        [selected]="selectedImpactIds()"
+        (selectedChange)="selectedImpactIds.set($event)"
+      />
+      <app-multiselect
+        label="Status"
+        [options]="toOptions(statuses())"
+        [selected]="selectedStatusIds()"
+        (selectedChange)="selectedStatusIds.set($event)"
+      />
+      <app-multiselect
+        label="Reporter"
+        [options]="toUserOptions(users())"
+        [selected]="selectedReporterIds()"
+        (selectedChange)="selectedReporterIds.set($event)"
+      />
+      <app-multiselect
+        label="Responsible"
+        [options]="toUserOptions(users())"
+        [selected]="selectedResponsibleIds()"
+        (selectedChange)="selectedResponsibleIds.set($event)"
+      />
+      <app-multiselect
+        label="Affected Build"
+        [options]="toOptions(builds())"
+        [selected]="selectedBuildIds()"
+        (selectedChange)="selectedBuildIds.set($event)"
+      />
+      <div class="right-actions">
+        <button class="btn-ghost" (click)="clearFilters()">
+          <app-icon name="x" [size]="14" />
+          Clear
+        </button>
+        <button class="btn-primary" (click)="applySearch()">
+          <app-icon name="search" [size]="14" />
+          Search
+        </button>
+      </div>
+    </div>
+
     <div class="table-scroll">
       <table>
         <thead>
@@ -60,10 +149,12 @@
               <tr [class]="sevClass(bug.impact)">
                 <td class="bug-id mono clickable" (click)="openEditModal(bug)">BUG-{{ bug.bugId }}</td>
                 <td>
-                  <div class="bug-title">{{ bug.title }}</div>
-                  <div class="bug-desc">{{ bug.description }}</div>
+                  <div class="bug-title" appTooltipLabel="Full Title" [appTooltip]="bug.title">{{ bug.title }}</div>
+                  <div class="bug-desc" appTooltipLabel="Full Description" [appTooltip]="bug.description">{{ bug.description }}</div>
                 </td>
-                <td class="expected-behavior">{{ bug.expectedBehavior }}</td>
+                <td>
+                  <div class="expected-behavior" appTooltipLabel="Expected Behavior" [appTooltip]="bug.expectedBehavior ?? ''">{{ bug.expectedBehavior }}</div>
+                </td>
                 <td class="mono">{{ bug.affectedBuild }}</td>
                 <td>
                   @if (impactMeta(bug.impact); as meta) {
