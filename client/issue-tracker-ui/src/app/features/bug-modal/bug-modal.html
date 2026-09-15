@@ -23,22 +23,34 @@
         <div class="modal-left">
           <div class="field">
             <label>Title <span class="req">*</span></label>
-            <input type="text" formControlName="title" placeholder="Short summary of the bug">
+            <input type="text" formControlName="title" placeholder="Short summary of the bug" maxlength="200">
+            @if (fieldError('title'); as msg) {
+              <div class="field-error">{{ msg }}</div>
+            }
           </div>
 
           <div class="field">
             <label>Description <span class="req">*</span></label>
-            <textarea class="tall" formControlName="description" placeholder="What happened? Steps to reproduce, if known."></textarea>
+            <textarea class="tall" formControlName="description" placeholder="What happened? Steps to reproduce, if known." maxlength="2000"></textarea>
+            @if (fieldError('description'); as msg) {
+              <div class="field-error">{{ msg }}</div>
+            }
           </div>
 
           <div class="field">
             <label>Expected Behavior</label>
-            <textarea class="tall" formControlName="expectedBehavior" placeholder="What should have happened instead?"></textarea>
+            <textarea class="tall" formControlName="expectedBehavior" placeholder="What should have happened instead?" maxlength="2000"></textarea>
+            @if (fieldError('expectedBehavior'); as msg) {
+              <div class="field-error">{{ msg }}</div>
+            }
           </div>
 
           <div class="field">
             <label>Remarks</label>
-            <textarea formControlName="remarks" placeholder="Any additional notes"></textarea>
+            <textarea formControlName="remarks" placeholder="Any additional notes" maxlength="1000"></textarea>
+            @if (fieldError('remarks'); as msg) {
+              <div class="field-error">{{ msg }}</div>
+            }
           </div>
         </div>
 
@@ -46,22 +58,34 @@
           <div class="field">
             <label>Affected Build <span class="req">*</span></label>
             <app-select formControlName="affectedBuildId" [options]="buildOptions" placeholder="Select build" />
+            @if (fieldError('affectedBuildId'); as msg) {
+              <div class="field-error">{{ msg }}</div>
+            }
           </div>
 
           <div class="field">
             <label>Variant <span class="req">*</span></label>
             <app-select formControlName="variantId" [options]="variantOptions" placeholder="Select variant" />
+            @if (fieldError('variantId'); as msg) {
+              <div class="field-error">{{ msg }}</div>
+            }
           </div>
 
           <div class="field">
             <label>Impact <span class="req">*</span></label>
             <app-select formControlName="impactId" [options]="impactOptions" placeholder="Select impact" />
+            @if (fieldError('impactId'); as msg) {
+              <div class="field-error">{{ msg }}</div>
+            }
           </div>
 
           <div class="field">
             <label>Status</label>
             @if (isEdit) {
               <app-select formControlName="statusId" [options]="statusOptions" placeholder="Select status" />
+              @if (fieldError('statusId'); as msg) {
+                <div class="field-error">{{ msg }}</div>
+              }
             } @else {
               <div class="readonly-field">Open</div>
             }
@@ -76,8 +100,11 @@
           </div>
 
           <div class="field">
-            <label>Responsible</label>
+            <label>Responsible <span class="req">*</span></label>
             <app-select formControlName="responsibleId" [options]="responsibleOptions" placeholder="Unassigned" />
+            @if (fieldError('responsibleId'); as msg) {
+              <div class="field-error">{{ msg }}</div>
+            }
           </div>
 
           @if (isEdit) {

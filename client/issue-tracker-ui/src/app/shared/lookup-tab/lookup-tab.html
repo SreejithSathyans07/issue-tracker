@@ -9,6 +9,7 @@
       [ngModel]="newName()"
       (ngModelChange)="newName.set($event)"
       (keydown.enter)="submitNew()"
+      maxlength="50"
     >
     <button class="btn-primary" (click)="submitNew()">
       <app-icon name="plus" [size]="14" />
@@ -37,6 +38,7 @@
               (ngModelChange)="editingName.set($event)"
               (keydown.enter)="submitEdit(item.id)"
               (keydown.escape)="cancelEdit()"
+              maxlength="50"
             >
             <div class="item-actions">
               <button class="icon-btn save-btn" (click)="submitEdit(item.id)">

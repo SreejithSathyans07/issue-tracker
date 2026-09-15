@@ -104,158 +104,225 @@ export class Admin implements OnInit {
 
   // Users
   reloadUsers() {
-    this.lookup.getUsers().subscribe((u) => this.users.set(u));
+    this.lookup.getUsers().subscribe((u) => {
+      this.users.set(u);
+      this.loading.set(false);
+    });
   }
 
   toggleRole(user: UserResponse) {
     this.userError.set(null);
     const newRole = user.role === 'Admin' ? 'User' : 'Admin';
+    this.loading.set(true);
     this.lookup.updateUserRole(user.id, newRole).subscribe({
       next: () => {
         this.toast.success(`${user.name} is now ${newRole === 'Admin' ? 'an Admin' : 'a Member'}.`);
         this.reloadUsers();
       },
-      error: (err) => this.userError.set(err.error ?? 'Failed to update role.')
+      error: (err) => {
+        this.userError.set(err.error ?? 'Failed to update role.');
+        this.loading.set(false);
+      }
     });
   }
 
   // Statuses
   reloadStatuses() {
-    this.lookup.getStatuses().subscribe((s) => this.statuses.set(s));
+    this.lookup.getStatuses().subscribe((s) => {
+      this.statuses.set(s);
+      this.loading.set(false);
+    });
   }
   createStatus(request: ColoredLookupRequest) {
     this.statusError.set(null);
+    this.loading.set(true);
     this.lookup.createStatus(request).subscribe({
       next: () => {
         this.toast.success(`Status "${request.name}" added.`);
         this.reloadStatuses();
       },
-      error: (err) => this.statusError.set(err.error ?? 'Failed to add status.')
+      error: (err) => {
+        this.statusError.set(err.error ?? 'Failed to add status.');
+        this.loading.set(false);
+      }
     });
   }
   updateStatus(event: { id: number; request: ColoredLookupRequest }) {
     this.statusError.set(null);
+    this.loading.set(true);
     this.lookup.updateStatus(event.id, event.request).subscribe({
       next: () => {
         this.toast.success(`Status "${event.request.name}" updated.`);
         this.reloadStatuses();
       },
-      error: (err) => this.statusError.set(err.error ?? 'Failed to update status.')
+      error: (err) => {
+        this.statusError.set(err.error ?? 'Failed to update status.');
+        this.loading.set(false);
+      }
     });
   }
   deleteStatus(id: number) {
     this.statusError.set(null);
+    this.loading.set(true);
     this.lookup.deleteStatus(id).subscribe({
       next: () => {
         this.toast.success('Status deleted.');
         this.reloadStatuses();
       },
-      error: (err) => this.confirm.alert({ title: 'Cannot delete status', message: err.error ?? 'Failed to delete status.' })
+      error: (err) => {
+        this.loading.set(false);
+        this.confirm.alert({ title: 'Cannot delete status', message: err.error ?? 'Failed to delete status.' });
+      }
     });
   }
 
   // Impacts
   reloadImpacts() {
-    this.lookup.getImpacts().subscribe((i) => this.impacts.set(i));
+    this.lookup.getImpacts().subscribe((i) => {
+      this.impacts.set(i);
+      this.loading.set(false);
+    });
   }
   createImpact(request: ColoredLookupRequest) {
     this.impactError.set(null);
+    this.loading.set(true);
     this.lookup.createImpact(request).subscribe({
       next: () => {
         this.toast.success(`Impact "${request.name}" added.`);
         this.reloadImpacts();
       },
-      error: (err) => this.impactError.set(err.error ?? 'Failed to add impact.')
+      error: (err) => {
+        this.impactError.set(err.error ?? 'Failed to add impact.');
+        this.loading.set(false);
+      }
     });
   }
   updateImpact(event: { id: number; request: ColoredLookupRequest }) {
     this.impactError.set(null);
+    this.loading.set(true);
     this.lookup.updateImpact(event.id, event.request).subscribe({
       next: () => {
         this.toast.success(`Impact "${event.request.name}" updated.`);
         this.reloadImpacts();
       },
-      error: (err) => this.impactError.set(err.error ?? 'Failed to update impact.')
+      error: (err) => {
+        this.impactError.set(err.error ?? 'Failed to update impact.');
+        this.loading.set(false);
+      }
     });
   }
   deleteImpact(id: number) {
     this.impactError.set(null);
+    this.loading.set(true);
     this.lookup.deleteImpact(id).subscribe({
       next: () => {
         this.toast.success('Impact deleted.');
         this.reloadImpacts();
       },
-      error: (err) => this.confirm.alert({ title: 'Cannot delete impact', message: err.error ?? 'Failed to delete impact.' })
+      error: (err) => {
+        this.loading.set(false);
+        this.confirm.alert({ title: 'Cannot delete impact', message: err.error ?? 'Failed to delete impact.' });
+      }
     });
   }
 
   // Variants
   reloadVariants() {
-    this.lookup.getVariants().subscribe((v) => this.variants.set(v));
+    this.lookup.getVariants().subscribe((v) => {
+      this.variants.set(v);
+      this.loading.set(false);
+    });
   }
   createVariant(name: string) {
     this.variantError.set(null);
+    this.loading.set(true);
     this.lookup.createVariant(name.toUpperCase()).subscribe({
       next: () => {
         this.toast.success(`Variant "${name.toUpperCase()}" added.`);
         this.reloadVariants();
       },
-      error: (err) => this.variantError.set(err.error ?? 'Failed to add variant.')
+      error: (err) => {
+        this.variantError.set(err.error ?? 'Failed to add variant.');
+        this.loading.set(false);
+      }
     });
   }
   updateVariant(event: { id: number; name: string }) {
     this.variantError.set(null);
+    this.loading.set(true);
     this.lookup.updateVariant(event.id, event.name.toUpperCase()).subscribe({
       next: () => {
         this.toast.success(`Variant "${event.name.toUpperCase()}" updated.`);
         this.reloadVariants();
       },
-      error: (err) => this.variantError.set(err.error ?? 'Failed to update variant.')
+      error: (err) => {
+        this.variantError.set(err.error ?? 'Failed to update variant.');
+        this.loading.set(false);
+      }
     });
   }
   deleteVariant(id: number) {
     this.variantError.set(null);
+    this.loading.set(true);
     this.lookup.deleteVariant(id).subscribe({
       next: () => {
         this.toast.success('Variant deleted.');
         this.reloadVariants();
       },
-      error: (err) => this.confirm.alert({ title: 'Cannot delete variant', message: err.error ?? 'Failed to delete variant.' })
+      error: (err) => {
+        this.loading.set(false);
+        this.confirm.alert({ title: 'Cannot delete variant', message: err.error ?? 'Failed to delete variant.' });
+      }
     });
   }
 
   // Builds
   reloadBuilds() {
-    this.lookup.getBuilds().subscribe((b) => this.builds.set(b));
+    this.lookup.getBuilds().subscribe((b) => {
+      this.builds.set(b);
+      this.loading.set(false);
+    });
   }
   createBuild(name: string) {
     this.buildError.set(null);
+    this.loading.set(true);
     this.lookup.createBuild(name).subscribe({
       next: () => {
         this.toast.success(`Build "${name}" added.`);
         this.reloadBuilds();
       },
-      error: (err) => this.buildError.set(err.error ?? 'Failed to add build.')
+      error: (err) => {
+        this.buildError.set(err.error ?? 'Failed to add build.');
+        this.loading.set(false);
+      }
     });
   }
   updateBuild(event: { id: number; name: string }) {
     this.buildError.set(null);
+    this.loading.set(true);
     this.lookup.updateBuild(event.id, event.name).subscribe({
       next: () => {
         this.toast.success(`Build "${event.name}" updated.`);
         this.reloadBuilds();
       },
-      error: (err) => this.buildError.set(err.error ?? 'Failed to update build.')
+      error: (err) => {
+        this.buildError.set(err.error ?? 'Failed to update build.');
+        this.loading.set(false);
+      }
     });
   }
   deleteBuild(id: number) {
     this.buildError.set(null);
+    this.loading.set(true);
     this.lookup.deleteBuild(id).subscribe({
       next: () => {
         this.toast.success('Build deleted.');
         this.reloadBuilds();
       },
-      error: (err) => this.confirm.alert({ title: 'Cannot delete build', message: err.error ?? 'Failed to delete build.' })
+      error: (err) => {
+        this.loading.set(false);
+        this.confirm.alert({ title: 'Cannot delete build', message: err.error ?? 'Failed to delete build.' });
+      }
     });
   }
 }

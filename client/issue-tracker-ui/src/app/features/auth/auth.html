@@ -20,8 +20,11 @@
           <label>Username</label>
           <div class="input-wrap">
             <app-icon name="user" />
-            <input type="text" formControlName="username" placeholder="e.g. sreejith">
+            <input type="text" formControlName="username" placeholder="e.g. sreejith" maxlength="30">
           </div>
+          @if (fieldError(loginForm, 'username'); as msg) {
+            <div class="field-error">{{ msg }}</div>
+          }
         </div>
 
         <div class="field">
@@ -33,11 +36,15 @@
               class="has-toggle"
               formControlName="password"
               placeholder="••••••••"
+              maxlength="100"
             >
             <button type="button" class="pw-toggle" (click)="showLoginPw.set(!showLoginPw())">
               <app-icon [name]="showLoginPw() ? 'eye-off' : 'eye'" />
             </button>
           </div>
+          @if (fieldError(loginForm, 'password'); as msg) {
+            <div class="field-error">{{ msg }}</div>
+          }
         </div>
 
         @if (loginError()) {
@@ -47,7 +54,9 @@
           </div>
         }
 
-        <button type="submit" class="btn-primary">Log In</button>
+        <button type="submit" class="btn-primary" [disabled]="loggingIn()">
+          Log In
+        </button>
 
         <div class="switch-line">Don't have an account? <a (click)="switchTab('signup')">Sign up</a></div>
       </form>
@@ -63,17 +72,24 @@
           <label>Name</label>
           <div class="input-wrap">
             <app-icon name="user" />
-            <input type="text" formControlName="name" placeholder="e.g. Sreejith Kumar">
+            <input type="text" formControlName="name" placeholder="e.g. Sreejith Kumar" maxlength="100">
           </div>
+          @if (fieldError(signupForm, 'name'); as msg) {
+            <div class="field-error">{{ msg }}</div>
+          }
         </div>
 
         <div class="field">
           <label>Username</label>
           <div class="input-wrap">
             <app-icon name="at-sign" />
-            <input type="text" formControlName="username" placeholder="Choose a username">
+            <input type="text" formControlName="username" placeholder="Choose a username" maxlength="30">
           </div>
-          <div class="hint">Letters, numbers, and underscores only.</div>
+          @if (fieldError(signupForm, 'username'); as msg) {
+            <div class="field-error">{{ msg }}</div>
+          } @else {
+            <div class="hint">Letters, numbers, and underscores only.</div>
+          }
         </div>
 
         <div class="field">
@@ -85,12 +101,17 @@
               class="has-toggle"
               formControlName="password"
               placeholder="Create a password"
+              maxlength="100"
             >
             <button type="button" class="pw-toggle" (click)="showSignupPw.set(!showSignupPw())">
               <app-icon [name]="showSignupPw() ? 'eye-off' : 'eye'" />
             </button>
           </div>
-          <div class="hint">At least 6 characters.</div>
+          @if (fieldError(signupForm, 'password'); as msg) {
+            <div class="field-error">{{ msg }}</div>
+          } @else {
+            <div class="hint">At least 6 characters.</div>
+          }
         </div>
 
         <div class="field">
@@ -102,6 +123,7 @@
               class="has-toggle"
               formControlName="confirmPassword"
               placeholder="Re-enter password"
+              maxlength="100"
             >
             <button type="button" class="pw-toggle" (click)="showSignupConfirmPw.set(!showSignupConfirmPw())">
               <app-icon [name]="showSignupConfirmPw() ? 'eye-off' : 'eye'" />
@@ -122,7 +144,9 @@
           </div>
         }
 
-        <button type="submit" class="btn-primary">Create Account</button>
+        <button type="submit" class="btn-primary" [disabled]="signingUp()">
+          Create Account
+        </button>
 
         <div class="switch-line">Already have an account? <a (click)="switchTab('login')">Log in</a></div>
       </form>
@@ -131,3 +155,9 @@
 
   <div class="footnote">Internal tool — access limited to team members</div>
 </div>
+
+@if (loggingIn() || signingUp()) {
+  <div class="loading-overlay">
+    <app-loader [size]="22" />
+  </div>
+}

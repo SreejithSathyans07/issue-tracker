@@ -131,6 +131,11 @@
 .field textarea.tall {
   min-height: 150px;
 }
+.field-error {
+  font-size: 0.8125rem;
+  color: var(--danger);
+  font-weight: 600;
+}
 
 .readonly-field {
   display: flex;

@@ -34,10 +34,10 @@ export class BugModal {
   private addDefaultsApplied = false;
 
   form = this.fb.group({
-    title: ['', Validators.required],
-    description: ['', Validators.required],
-    expectedBehavior: [''],
-    remarks: [''],
+    title: ['', [Validators.required, Validators.maxLength(200)]],
+    description: ['', [Validators.required, Validators.maxLength(2000)]],
+    expectedBehavior: ['', Validators.maxLength(2000)],
+    remarks: ['', Validators.maxLength(1000)],
     affectedBuildId: [null as number | null, Validators.required],
     variantId: [null as number | null, Validators.required],
     impactId: [null as number | null, Validators.required],
@@ -107,6 +107,15 @@ export class BugModal {
     return this.users().map((u) => ({ value: u.id, label: u.name }));
   }
 
+  fieldError(field: string): string | null {
+    const control = this.form.get(field);
+    if (!control || !control.touched || !control.errors) return null;
+
+    if (control.errors['required']) return 'This field is required.';
+    if (control.errors['maxlength']) return `Must be ${control.errors['maxlength'].requiredLength} characters or fewer.`;
+    return null;
+  }
+
   @HostListener('document:keydown.escape')
   close() {
     this.closed.emit();
@@ -117,7 +126,6 @@ export class BugModal {
 
     if (this.form.invalid) {
       this.form.markAllAsTouched();
-      this.error.set('Please fill in all required fields.');
       return;
     }
 

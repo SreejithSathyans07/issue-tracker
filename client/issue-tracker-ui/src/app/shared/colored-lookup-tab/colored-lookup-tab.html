@@ -9,6 +9,7 @@
       [ngModel]="newName()"
       (ngModelChange)="newName.set($event)"
       (keydown.enter)="submitNew()"
+      maxlength="50"
     >
     <app-select class="color-select" [options]="colorSelectOptions" [ngModel]="newColor()" (ngModelChange)="newColor.set($event)" placeholder="Color" />
     <app-select class="icon-select" [options]="iconSelectOptions" [ngModel]="newIcon()" (ngModelChange)="newIcon.set($event)" placeholder="Icon" />
@@ -39,6 +40,7 @@
               (ngModelChange)="editName.set($event)"
               (keydown.enter)="submitEdit(item.id)"
               (keydown.escape)="cancelEdit()"
+              maxlength="50"
             >
             <app-select class="color-select" [options]="colorSelectOptions" [ngModel]="editColor()" (ngModelChange)="editColor.set($event)" placeholder="Color" />
             <app-select class="icon-select" [options]="iconSelectOptions" [ngModel]="editIcon()" (ngModelChange)="editIcon.set($event)" placeholder="Icon" />

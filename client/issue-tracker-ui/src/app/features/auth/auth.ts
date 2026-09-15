@@ -1,8 +1,11 @@
 import { Component, inject, signal } from '@angular/core';
-import { ReactiveFormsModule, FormBuilder, Validators, AbstractControl, ValidationErrors } from '@angular/forms';
+import { ReactiveFormsModule, FormBuilder, FormGroup, Validators, AbstractControl, ValidationErrors } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Icon } from '../../shared/icon/icon';
+import { Loader } from '../../shared/loader/loader';
 import { Auth as AuthService } from '../../core/auth';
+
+const USERNAME_PATTERN = /^[a-zA-Z0-9_]+$/;
 
 function passwordsMatchValidator(control: AbstractControl): ValidationErrors | null {
   const password = control.get('password')?.value;
@@ -12,7 +15,7 @@ function passwordsMatchValidator(control: AbstractControl): ValidationErrors | n
 
 @Component({
   selector: 'app-auth',
-  imports: [ReactiveFormsModule, Icon],
+  imports: [ReactiveFormsModule, Icon, Loader],
   templateUrl: './auth.html',
   styleUrl: './auth.css'
 })
@@ -33,16 +36,19 @@ export class AuthPage {
   signupError = signal<string | null>(null);
   signupSuccess = signal(false);
 
+  loggingIn = signal(false);
+  signingUp = signal(false);
+
   loginForm = this.fb.group({
-    username: ['', Validators.required],
-    password: ['', Validators.required]
+    username: ['', [Validators.required, Validators.maxLength(30)]],
+    password: ['', [Validators.required, Validators.maxLength(100)]]
   });
 
   signupForm = this.fb.group(
     {
-      name: ['', Validators.required],
-      username: ['', Validators.required],
-      password: ['', [Validators.required, Validators.minLength(6)]],
+      name: ['', [Validators.required, Validators.maxLength(100)]],
+      username: ['', [Validators.required, Validators.maxLength(30), Validators.pattern(USERNAME_PATTERN)]],
+      password: ['', [Validators.required, Validators.minLength(6), Validators.maxLength(100)]],
       confirmPassword: ['', Validators.required]
     },
     { validators: passwordsMatchValidator }
@@ -55,6 +61,17 @@ export class AuthPage {
     this.signupSuccess.set(false);
   }
 
+  fieldError(form: FormGroup, field: string): string | null {
+    const control = form.get(field);
+    if (!control || !control.touched || !control.errors) return null;
+
+    if (control.errors['required']) return 'This field is required.';
+    if (control.errors['maxlength']) return `Must be ${control.errors['maxlength'].requiredLength} characters or fewer.`;
+    if (control.errors['minlength']) return `Must be at least ${control.errors['minlength'].requiredLength} characters.`;
+    if (control.errors['pattern']) return 'Letters, numbers, and underscores only.';
+    return null;
+  }
+
   submitLogin() {
     this.loginError.set(null);
 
@@ -65,12 +82,14 @@ export class AuthPage {
     }
 
     const { username, password } = this.loginForm.getRawValue();
+    this.loggingIn.set(true);
 
     this.authService.login({ username: username!, password: password! }).subscribe({
       next: () => {
         this.router.navigate(['/bugs']);
       },
       error: () => {
+        this.loggingIn.set(false);
         this.loginError.set('Incorrect username or password.');
       }
     });
@@ -92,13 +111,16 @@ export class AuthPage {
     }
 
     const { name, username, password } = this.signupForm.getRawValue();
+    this.signingUp.set(true);
 
     this.authService.signup({ name: name!, username: username!, password: password! }).subscribe({
       next: () => {
+        this.signingUp.set(false);
         this.signupSuccess.set(true);
         this.signupForm.reset();
       },
       error: (err) => {
+        this.signingUp.set(false);
         this.signupError.set(err.error ?? 'Something went wrong. Please try again.');
       }
     });

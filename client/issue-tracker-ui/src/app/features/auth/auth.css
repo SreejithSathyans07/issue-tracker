@@ -98,10 +98,8 @@
 }
 .input-wrap {
   position: relative;
-  display: flex;
-  align-items: center;
 }
-.input-wrap app-icon {
+.input-wrap > app-icon {
   position: absolute;
   left: 12px;
   top: 50%;
@@ -150,6 +148,12 @@
   color: var(--ink-soft);
   margin-top: 6px;
 }
+.field-error {
+  font-size: 0.8125rem;
+  color: var(--danger);
+  margin-top: 6px;
+  font-weight: 600;
+}
 
 .callout {
   display: flex;
@@ -182,6 +186,9 @@
 
 .btn-primary {
   width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   background: var(--accent);
   color: white;
   border: none;
@@ -193,6 +200,10 @@
   cursor: pointer;
   margin-top: 4px;
   box-shadow: 0 1px 2px rgba(59, 75, 107, 0.25);
+}
+.btn-primary:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
 }
 .btn-primary:hover {
   background: #2E3B54;
@@ -219,4 +230,15 @@
   font-size: 0.8125rem;
   color: var(--ink-soft);
   margin-top: 20px;
+}
+
+.loading-overlay {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(245, 245, 242, 0.65);
+  color: var(--accent);
+  z-index: 40;
 }
