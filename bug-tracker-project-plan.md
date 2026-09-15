@@ -148,15 +148,16 @@ _(Added — not in the original plan, pulled forward ahead of Stage 10 filtering
 
 ## Stage 10: Filtering, Search, Count
 
-- [ ] **10.1** Extend "Get all bugs" endpoint (backend)
-  - Accept filter query params: variant, impact, status, reporter, responsible, fixedBuild
-- [ ] **10.2** Add title/description search param (backend)
-- [ ] **10.3** Build filter bar UI (frontend)
-  - Dropdowns for each filter field
-- [ ] **10.4** Build search box (frontend)
-  - Wire both to API call
-- [ ] **10.5** Add count section at top
-  - Shows count of currently filtered results
+- [x] **10.1** Extend "Get all bugs" endpoint (backend)
+  - `GET /api/bugs` binds a `BugFilterRequest` DTO with `VariantIds`/`ImpactIds`/`StatusIds`/`ReporterIds`/`ResponsibleIds`/`AffectedBuildIds` (all multi-select `List<int>?`, not single values); applied in `BugService.GetAllBugsAsync` as chained EF Core `.Where(...Contains(...))` clauses
+- [x] **10.2** Add title/description search param (backend)
+  - Same DTO's `Search` string matched against `Title` OR `Description` via `EF.Functions.Like`
+- [x] **10.3** Build filter bar UI (frontend)
+  - Variant is a single-select pill in the topbar; Impact/Status/Reporter/Responsible/Affected Build use a custom shared `app-multiselect` component; "Clear" resets all filters
+- [x] **10.4** Build search box (frontend)
+  - Plain input bound to a signal, submits on Enter or a Search button, builds a `BugFilter` and calls the filtered API
+- [x] **10.5** Add count section at top
+  - Went further than a plain count: an SVG donut chart broken down by status with a legend and total, plus a "no bugs match" empty state
 
 ---
 
@@ -180,15 +181,16 @@ _(Added — not in the original plan, pulled forward ahead of Stage 10 filtering
 
 ## Stage 12: Polish
 
-- [ ] **12.1** Add form validation
-  - Required fields, max lengths
-- [ ] **12.2** Add basic error handling/toasts
-  - On API failures
-- [ ] **12.3** Add loading states/spinners
-  - Bug list and modal submit already covered in Stage 8/9; sweep for anything left
-- [ ] **12.4** Clean up UI styling
-- [ ] **12.5** Write a short README
-  - Setup + run instructions
+- [x] **12.1** Add form validation
+  - Angular Reactive Forms: bug Add/Edit modal uses `FormBuilder` + `Validators.required`/`maxLength`, errors shown only once a control is touched; Signup/Login add `minlength`, `pattern`, and a custom cross-field password-match validator
+- [x] **12.2** Add basic error handling/toasts
+  - Hand-rolled signal-based `Toast` service (success/error/info, auto-dismiss) used across bug save/status-change and all Admin Dashboard CRUD actions; a global `authInterceptor` catches 401s app-wide and force-logs-out
+- [x] **12.3** Add loading states/spinners
+  - Shared `app-loader` component used on the bug list, bug modal submit, admin dashboard, and login/signup submit
+- [x] **12.4** Clean up UI styling
+  - Consistent design system across the app (shared font, color tokens, shared select/multiselect/tooltip components), done incrementally alongside other stages rather than as one dedicated pass
+- [x] **12.5** Write a short README
+  - Root `README.md`: tech stack, project structure, backend setup (user-secrets, EF migrations, first-Admin bootstrap), frontend setup, running tests, deployment steps, live URLs, and a full Azure SQL provisioning walkthrough
 
 ---
 
