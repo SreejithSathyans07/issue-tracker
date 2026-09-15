@@ -21,6 +21,8 @@ bin/
 obj/
 *.user
 .vs/
+publish/
+deploy.zip
 
 # --- IDEs and editors ---
 .idea/

@@ -53,7 +53,7 @@ builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowFrontendDev", policy =>
     {
-        policy.WithOrigins("http://localhost:4200")
+        policy.WithOrigins("http://localhost:4200", "https://green-hill-0b65a570f.6.azurestaticapps.net")
             .AllowAnyHeader()
             .AllowAnyMethod();
     });
