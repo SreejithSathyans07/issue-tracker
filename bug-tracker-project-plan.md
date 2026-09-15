@@ -162,15 +162,19 @@ _(Added — not in the original plan, pulled forward ahead of Stage 10 filtering
 
 ## Stage 11: Deployment
 
-- [ ] **11.1** Create Azure App Service (F1) resource
-  - Deploy backend
-- [ ] **11.2** Update backend CORS settings
-  - Allow frontend domain
-- [ ] **11.3** Create Azure Static Web App resource
-  - Deploy frontend
-- [ ] **11.4** Update frontend API base URL
-  - Point to deployed backend
-- [ ] **11.5** Test end-to-end on deployed URLs
+- [x] **11.1** Create Azure App Service (F1) resource
+  - `issue-tracker-api` in the `issue-tracker-app` resource group, Linux, .NET 10 (LTS); deployed manually via `az webapp deploy` (zip deploy) rather than CI/CD — GitHub Actions/Jenkins automation deferred to later
+  - Connection string and JWT signing key set as App Service Environment Variables (`ConnectionStrings__DefaultConnection`, `Jwt__SigningKey`), read automatically by the existing `IConfiguration` code with no code changes
+  - Had to enable "Allow Azure services and resources to access this server" on the SQL Server firewall so the App Service could reach the database
+- [x] **11.2** Update backend CORS settings
+  - Added the Static Web App origin to the existing hardcoded `WithOrigins(...)` list in `Program.cs` (chose to keep hardcoding over moving to config-driven origins, for simplicity)
+- [x] **11.3** Create Azure Static Web App resource
+  - `issue-tracker-ui`, Free tier, deployed manually via the SWA CLI (`swa deploy`) with a deployment token, not GitHub Actions
+- [x] **11.4** Update frontend API base URL
+  - Added `environment.prod.ts` + an `angular.json` `fileReplacements` entry on the `production` build configuration, pointing at the deployed backend URL
+  - Also added `public/staticwebapp.config.json` with a `navigationFallback` rule — without it, refreshing any non-root route (e.g. `/login`) 404'd, since Azure was trying to resolve Angular client-side routes as real files
+- [x] **11.5** Test end-to-end on deployed URLs
+  - Confirmed live: signup/login, CORS, and page-refresh routing all working on the deployed frontend + backend
 
 ---
 
