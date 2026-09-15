@@ -1,0 +1,11 @@
+<div class="toast-stack">
+  @for (t of toast.toasts(); track t.id) {
+    <div class="toast" [class]="t.variant">
+      <app-icon [name]="icon(t.variant)" [size]="17" />
+      <span>{{ t.message }}</span>
+      <button class="close-btn" (click)="toast.dismiss(t.id)">
+        <app-icon name="x" [size]="14" />
+      </button>
+    </div>
+  }
+</div>

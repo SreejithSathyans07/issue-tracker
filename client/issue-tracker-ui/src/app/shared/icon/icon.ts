@@ -37,7 +37,8 @@ import {
   LucideArrowUp,
   LucidePencil,
   LucideSearch,
-  LucideHelpCircle
+  LucideHelpCircle,
+  LucideInfo
 } from '@lucide/angular';
 
 const ICONS: Record<string, LucideIcon> = {
@@ -76,7 +77,8 @@ const ICONS: Record<string, LucideIcon> = {
   'arrow-up': LucideArrowUp,
   pencil: LucidePencil,
   search: LucideSearch,
-  'help-circle': LucideHelpCircle
+  'help-circle': LucideHelpCircle,
+  info: LucideInfo
 };
 
 /** Icon names that make sense for a user-facing icon picker (Status/Impact lookup values). */

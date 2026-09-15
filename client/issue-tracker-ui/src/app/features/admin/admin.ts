@@ -5,6 +5,7 @@ import { LookupTab } from '../../shared/lookup-tab/lookup-tab';
 import { ColoredLookupTab, ColorOption } from '../../shared/colored-lookup-tab/colored-lookup-tab';
 import { Lookup, LookupItem, ColoredLookupItem, ColoredLookupRequest } from '../../core/lookup';
 import { Auth, UserResponse } from '../../core/auth';
+import { Toast } from '../../core/toast';
 
 type Tab = 'users' | 'status' | 'impact' | 'variant' | 'build';
 
@@ -18,6 +19,7 @@ export class Admin implements OnInit {
   private lookup = inject(Lookup);
   private auth = inject(Auth);
   private router = inject(Router);
+  private toast = inject(Toast);
 
   activeTab = signal<Tab>('users');
 
@@ -88,7 +90,10 @@ export class Admin implements OnInit {
     this.userError.set(null);
     const newRole = user.role === 'Admin' ? 'User' : 'Admin';
     this.lookup.updateUserRole(user.id, newRole).subscribe({
-      next: () => this.reloadUsers(),
+      next: () => {
+        this.toast.success(`${user.name} is now ${newRole === 'Admin' ? 'an Admin' : 'a Member'}.`);
+        this.reloadUsers();
+      },
       error: (err) => this.userError.set(err.error ?? 'Failed to update role.')
     });
   }
@@ -100,21 +105,30 @@ export class Admin implements OnInit {
   createStatus(request: ColoredLookupRequest) {
     this.statusError.set(null);
     this.lookup.createStatus(request).subscribe({
-      next: () => this.reloadStatuses(),
+      next: () => {
+        this.toast.success(`Status "${request.name}" added.`);
+        this.reloadStatuses();
+      },
       error: (err) => this.statusError.set(err.error ?? 'Failed to add status.')
     });
   }
   updateStatus(event: { id: number; request: ColoredLookupRequest }) {
     this.statusError.set(null);
     this.lookup.updateStatus(event.id, event.request).subscribe({
-      next: () => this.reloadStatuses(),
+      next: () => {
+        this.toast.success(`Status "${event.request.name}" updated.`);
+        this.reloadStatuses();
+      },
       error: (err) => this.statusError.set(err.error ?? 'Failed to update status.')
     });
   }
   deleteStatus(id: number) {
     this.statusError.set(null);
     this.lookup.deleteStatus(id).subscribe({
-      next: () => this.reloadStatuses(),
+      next: () => {
+        this.toast.success('Status deleted.');
+        this.reloadStatuses();
+      },
       error: (err) => this.statusError.set(err.error ?? 'Failed to delete status.')
     });
   }
@@ -126,21 +140,30 @@ export class Admin implements OnInit {
   createImpact(request: ColoredLookupRequest) {
     this.impactError.set(null);
     this.lookup.createImpact(request).subscribe({
-      next: () => this.reloadImpacts(),
+      next: () => {
+        this.toast.success(`Impact "${request.name}" added.`);
+        this.reloadImpacts();
+      },
       error: (err) => this.impactError.set(err.error ?? 'Failed to add impact.')
     });
   }
   updateImpact(event: { id: number; request: ColoredLookupRequest }) {
     this.impactError.set(null);
     this.lookup.updateImpact(event.id, event.request).subscribe({
-      next: () => this.reloadImpacts(),
+      next: () => {
+        this.toast.success(`Impact "${event.request.name}" updated.`);
+        this.reloadImpacts();
+      },
       error: (err) => this.impactError.set(err.error ?? 'Failed to update impact.')
     });
   }
   deleteImpact(id: number) {
     this.impactError.set(null);
     this.lookup.deleteImpact(id).subscribe({
-      next: () => this.reloadImpacts(),
+      next: () => {
+        this.toast.success('Impact deleted.');
+        this.reloadImpacts();
+      },
       error: (err) => this.impactError.set(err.error ?? 'Failed to delete impact.')
     });
   }
@@ -152,21 +175,30 @@ export class Admin implements OnInit {
   createVariant(name: string) {
     this.variantError.set(null);
     this.lookup.createVariant(name.toUpperCase()).subscribe({
-      next: () => this.reloadVariants(),
+      next: () => {
+        this.toast.success(`Variant "${name.toUpperCase()}" added.`);
+        this.reloadVariants();
+      },
       error: (err) => this.variantError.set(err.error ?? 'Failed to add variant.')
     });
   }
   updateVariant(event: { id: number; name: string }) {
     this.variantError.set(null);
     this.lookup.updateVariant(event.id, event.name.toUpperCase()).subscribe({
-      next: () => this.reloadVariants(),
+      next: () => {
+        this.toast.success(`Variant "${event.name.toUpperCase()}" updated.`);
+        this.reloadVariants();
+      },
       error: (err) => this.variantError.set(err.error ?? 'Failed to update variant.')
     });
   }
   deleteVariant(id: number) {
     this.variantError.set(null);
     this.lookup.deleteVariant(id).subscribe({
-      next: () => this.reloadVariants(),
+      next: () => {
+        this.toast.success('Variant deleted.');
+        this.reloadVariants();
+      },
       error: (err) => this.variantError.set(err.error ?? 'Failed to delete variant.')
     });
   }
@@ -178,21 +210,30 @@ export class Admin implements OnInit {
   createBuild(name: string) {
     this.buildError.set(null);
     this.lookup.createBuild(name).subscribe({
-      next: () => this.reloadBuilds(),
+      next: () => {
+        this.toast.success(`Build "${name}" added.`);
+        this.reloadBuilds();
+      },
       error: (err) => this.buildError.set(err.error ?? 'Failed to add build.')
     });
   }
   updateBuild(event: { id: number; name: string }) {
     this.buildError.set(null);
     this.lookup.updateBuild(event.id, event.name).subscribe({
-      next: () => this.reloadBuilds(),
+      next: () => {
+        this.toast.success(`Build "${event.name}" updated.`);
+        this.reloadBuilds();
+      },
       error: (err) => this.buildError.set(err.error ?? 'Failed to update build.')
     });
   }
   deleteBuild(id: number) {
     this.buildError.set(null);
     this.lookup.deleteBuild(id).subscribe({
-      next: () => this.reloadBuilds(),
+      next: () => {
+        this.toast.success('Build deleted.');
+        this.reloadBuilds();
+      },
       error: (err) => this.buildError.set(err.error ?? 'Failed to delete build.')
     });
   }

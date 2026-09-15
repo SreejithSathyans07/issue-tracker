@@ -8,6 +8,7 @@ import { Tooltip } from '../../shared/tooltip/tooltip';
 import { Auth, UserResponse } from '../../core/auth';
 import { Bug as BugService, BugResponse, BugFilter, UpdateBugRequest } from '../../core/bug';
 import { Lookup, LookupItem, ColoredLookupItem } from '../../core/lookup';
+import { Toast } from '../../core/toast';
 import { BugModal } from '../bug-modal/bug-modal';
 
 @Component({
@@ -21,6 +22,7 @@ export class Landing implements OnInit {
   private router = inject(Router);
   private bugService = inject(BugService);
   private lookup = inject(Lookup);
+  private toast = inject(Toast);
 
   bugs = signal<BugResponse[]>([]);
   loading = signal(false);
@@ -198,6 +200,7 @@ export class Landing implements OnInit {
 
   onBugSaved() {
     this.modalOpen.set(false);
+    this.toast.success(this.modalMode() === 'add' ? 'Bug created successfully.' : 'Bug updated successfully.');
     this.loadBugs();
   }
 
@@ -227,7 +230,11 @@ export class Landing implements OnInit {
     };
 
     this.bugService.update(bug.bugId, payload).subscribe({
-      next: () => this.loadBugs()
+      next: () => {
+        this.toast.success(`Status changed to "${statusName}".`);
+        this.loadBugs();
+      },
+      error: () => this.toast.error('Failed to change status. Please try again.')
     });
   }
 }
