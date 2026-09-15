@@ -1,7 +1,8 @@
-import { Component, input, output, signal } from '@angular/core';
+import { Component, inject, input, output, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Icon, PICKABLE_ICON_NAMES } from '../icon/icon';
 import { ColoredLookupItem, ColoredLookupRequest } from '../../core/lookup';
+import { Confirm } from '../../core/confirm';
 
 export interface ColorOption {
   value: string;
@@ -15,9 +16,12 @@ export interface ColorOption {
   styleUrl: './colored-lookup-tab.css'
 })
 export class ColoredLookupTab {
+  private confirm = inject(Confirm);
+
   heading = input.required<string>();
   description = input.required<string>();
   placeholder = input('e.g. New value');
+  itemLabel = input('entry');
   items = input.required<ColoredLookupItem[]>();
   colorOptions = input.required<ColorOption[]>();
   error = input<string | null>(null);
@@ -75,5 +79,18 @@ export class ColoredLookupTab {
       request: { name, color: this.editColor(), icon: this.editIcon() }
     });
     this.cancelEdit();
+  }
+
+  async requestDelete(item: ColoredLookupItem) {
+    const confirmed = await this.confirm.ask({
+      variant: 'danger',
+      title: `Delete "${item.name}"?`,
+      message: `This ${this.itemLabel()} will be permanently removed. This action can't be undone.`,
+      okLabel: 'Delete'
+    });
+
+    if (confirmed) {
+      this.delete.emit(item.id);
+    }
   }
 }

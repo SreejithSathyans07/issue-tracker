@@ -1,6 +1,6 @@
 import { Component, inject, signal } from '@angular/core';
 import { ReactiveFormsModule, FormBuilder, Validators, AbstractControl, ValidationErrors } from '@angular/forms';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Icon } from '../../shared/icon/icon';
 import { Auth as AuthService } from '../../core/auth';
 
@@ -20,13 +20,16 @@ export class AuthPage {
   private fb = inject(FormBuilder);
   private authService = inject(AuthService);
   private router = inject(Router);
+  private route = inject(ActivatedRoute);
 
   activeTab = signal<'login' | 'signup'>('login');
   showLoginPw = signal(false);
   showSignupPw = signal(false);
   showSignupConfirmPw = signal(false);
 
-  loginError = signal<string | null>(null);
+  loginError = signal<string | null>(
+    this.route.snapshot.queryParamMap.get('sessionExpired') ? 'Your session has expired. Please log in again.' : null
+  );
   signupError = signal<string | null>(null);
   signupSuccess = signal(false);
 

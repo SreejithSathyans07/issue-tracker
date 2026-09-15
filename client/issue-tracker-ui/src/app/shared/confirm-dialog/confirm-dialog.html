@@ -1,0 +1,18 @@
+@if (confirm.state(); as state) {
+  <div class="overlay">
+    <div class="dialog">
+      <div class="dialog-icon" [class]="state.variant">
+        <app-icon [name]="meta(state.variant).icon" [size]="24" />
+      </div>
+      <h2>{{ state.title }}</h2>
+      <p>{{ state.message }}</p>
+      <div class="dialog-actions">
+        <button class="btn-ghost" (click)="respond(false)">Cancel</button>
+        <button [class]="meta(state.variant).okClass" (click)="respond(true)">
+          <app-icon [name]="meta(state.variant).okIcon" [size]="14" />
+          {{ state.okLabel }}
+        </button>
+      </div>
+    </div>
+  </div>
+}

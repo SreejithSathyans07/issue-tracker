@@ -145,7 +145,6 @@
   color: var(--danger);
   background: var(--danger-soft);
 }
-
 .empty {
   text-align: center;
   color: var(--ink-soft);
