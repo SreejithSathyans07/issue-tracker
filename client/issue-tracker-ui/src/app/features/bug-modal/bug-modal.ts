@@ -2,13 +2,14 @@ import { Component, HostListener, effect, inject, input, output, signal } from '
 import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
 import { Icon } from '../../shared/icon/icon';
 import { Loader } from '../../shared/loader/loader';
+import { Select, SelectOption } from '../../shared/select/select';
 import { Bug as BugService, BugResponse, CreateBugRequest, UpdateBugRequest } from '../../core/bug';
 import { LookupItem, ColoredLookupItem } from '../../core/lookup';
 import { UserResponse } from '../../core/auth';
 
 @Component({
   selector: 'app-bug-modal',
-  imports: [ReactiveFormsModule, Icon, Loader],
+  imports: [ReactiveFormsModule, Icon, Loader, Select],
   templateUrl: './bug-modal.html',
   styleUrl: './bug-modal.css'
 })
@@ -86,12 +87,24 @@ export class BugModal {
     return this.mode() === 'edit';
   }
 
-  get impactPreview(): ColoredLookupItem | null {
-    return this.impacts().find((i) => i.id === this.form.value.impactId) ?? null;
+  get buildOptions(): SelectOption[] {
+    return this.builds().map((b) => ({ value: b.id, label: b.name }));
   }
 
-  get statusPreview(): ColoredLookupItem | null {
-    return this.statuses().find((s) => s.id === this.form.value.statusId) ?? null;
+  get variantOptions(): SelectOption[] {
+    return this.variants().map((v) => ({ value: v.id, label: v.name }));
+  }
+
+  get impactOptions(): SelectOption[] {
+    return this.impacts().map((i) => ({ value: i.id, label: i.name, icon: i.icon, color: i.color }));
+  }
+
+  get statusOptions(): SelectOption[] {
+    return this.statuses().map((s) => ({ value: s.id, label: s.name, icon: s.icon, color: s.color }));
+  }
+
+  get responsibleOptions(): SelectOption[] {
+    return this.users().map((u) => ({ value: u.id, label: u.name }));
   }
 
   @HostListener('document:keydown.escape')

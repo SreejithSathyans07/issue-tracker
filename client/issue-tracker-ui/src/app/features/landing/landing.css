@@ -53,31 +53,10 @@
 .variant-pill {
   display: flex;
   align-items: center;
-  gap: 7px;
-  border: 1.5px solid var(--accent);
-  border-radius: 20px;
-  padding: 7px 13px;
-  background: var(--accent-soft);
-  color: var(--accent);
+  font-size: 0.9375rem;
 }
-.variant-pill select {
-  appearance: none;
-  border: none;
-  color: var(--accent);
-  font-weight: 600;
-  font-size: 0.875rem;
-  padding: 0;
-  padding-right: 20px;
-  font-family: inherit;
-  cursor: pointer;
-  background-color: transparent;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%233B4B6B' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
-  background-repeat: no-repeat;
-  background-position: right center;
-  background-size: 15px;
-}
-.variant-pill select:focus {
-  outline: none;
+.variant-pill app-select {
+  min-width: 140px;
 }
 
 button {
@@ -380,23 +359,9 @@ tbody tr.sev-blocker {
 }
 
 .status-select {
-  appearance: none;
-  border: 1px solid var(--border);
-  border-radius: 7px;
-  padding: 4px 30px 4px 10px;
-  font-family: inherit;
+  display: block;
+  min-width: 150px;
   font-size: 0.875rem;
-  font-weight: 500;
-  background-color: #F3F3F1;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%236B6E73' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
-  background-repeat: no-repeat;
-  background-position: right 7px center;
-  background-size: 14px;
-  cursor: pointer;
-}
-.status-select:focus {
-  outline: 2px solid var(--accent);
-  outline-offset: 1px;
 }
 
 .empty-state {

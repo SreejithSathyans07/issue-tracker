@@ -234,3 +234,14 @@
     justify-content: space-between;
   }
 }
+
+.loading-overlay {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(245, 245, 242, 0.65);
+  color: var(--accent);
+  z-index: 40;
+}

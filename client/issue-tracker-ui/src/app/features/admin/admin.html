@@ -137,3 +137,9 @@
     }
   }
 </div>
+
+@if (loading()) {
+  <div class="loading-overlay">
+    <app-loader [size]="22" />
+  </div>
+}

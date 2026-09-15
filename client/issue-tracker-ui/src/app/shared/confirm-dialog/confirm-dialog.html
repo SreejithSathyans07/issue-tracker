@@ -7,7 +7,9 @@
       <h2>{{ state.title }}</h2>
       <p>{{ state.message }}</p>
       <div class="dialog-actions">
-        <button class="btn-ghost" (click)="respond(false)">Cancel</button>
+        @if (!state.hideCancel) {
+          <button class="btn-ghost" (click)="respond(false)">Cancel</button>
+        }
         <button [class]="meta(state.variant).okClass" (click)="respond(true)">
           <app-icon [name]="meta(state.variant).okIcon" [size]="14" />
           {{ state.okLabel }}

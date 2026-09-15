@@ -102,7 +102,6 @@
   color: var(--danger);
 }
 .field input,
-.field select,
 .field textarea {
   border: 1px solid var(--border);
   border-radius: 7px;
@@ -115,20 +114,7 @@
   box-sizing: border-box;
   width: 100%;
 }
-.field select {
-  appearance: none;
-  cursor: pointer;
-  padding-right: 34px;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%236B6E73' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
-  background-repeat: no-repeat;
-  background-position: right 9px center;
-  background-size: 16px;
-}
-.field select:hover {
-  background-color: #F0F0EE;
-}
 .field input:focus,
-.field select:focus,
 .field textarea:focus {
   outline: 2px solid var(--accent);
   outline-offset: 1px;
@@ -157,25 +143,6 @@
   color: var(--ink-soft);
   font-size: 1rem;
   flex: 1;
-}
-
-.select-preview {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-.select-preview select,
-.select-preview .readonly-field {
-  flex: 1;
-}
-.preview-icon {
-  width: 32px;
-  height: 32px;
-  border-radius: 7px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
 }
 
 .callout {

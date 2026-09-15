@@ -5,13 +5,11 @@
   </div>
   <div class="right">
     <div class="variant-pill">
-      <app-icon name="layers" [size]="14" />
-      <select [value]="selectedVariantId() ?? 'ALL'" (change)="onVariantChange($any($event.target).value)">
-        <option value="ALL">All Variants</option>
-        @for (v of variants(); track v.id) {
-          <option [value]="v.id">{{ v.name }}</option>
-        }
-      </select>
+      <app-select
+        [options]="variantSelectOptions"
+        [ngModel]="selectedVariantId() ?? 'ALL'"
+        (ngModelChange)="onVariantChange($event)"
+      />
     </div>
 
     <button class="btn-primary" (click)="openAddModal()">
@@ -165,15 +163,12 @@
                   }
                 </td>
                 <td>
-                  <select
+                  <app-select
                     class="status-select"
-                    [style.color]="statusMeta(bug.status)?.color"
-                    (change)="quickChangeStatus(bug, $any($event.target).value)"
-                  >
-                    @for (s of statuses(); track s.id) {
-                      <option [value]="s.name" [selected]="s.name === bug.status">{{ s.name }}</option>
-                    }
-                  </select>
+                    [options]="statusSelectOptions"
+                    [ngModel]="bug.status"
+                    (ngModelChange)="quickChangeStatus(bug, $any($event))"
+                  />
                 </td>
                 <td>{{ bug.reporter }}</td>
                 <td>{{ bug.responsible }}</td>

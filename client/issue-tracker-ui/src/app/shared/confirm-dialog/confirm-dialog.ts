@@ -5,7 +5,8 @@ import { Confirm, ConfirmVariant } from '../../core/confirm';
 const VARIANT_META: Record<ConfirmVariant, { icon: string; okIcon: string; okClass: string }> = {
   confirm: { icon: 'help-circle', okIcon: 'check', okClass: 'btn-primary' },
   danger: { icon: 'alert-triangle', okIcon: 'trash-2', okClass: 'btn-danger' },
-  success: { icon: 'check-circle', okIcon: 'check', okClass: 'btn-primary' }
+  success: { icon: 'check-circle', okIcon: 'check', okClass: 'btn-primary' },
+  info: { icon: 'info', okIcon: 'check', okClass: 'btn-primary' }
 };
 
 @Component({

@@ -55,6 +55,10 @@
   background: var(--success-soft);
   color: var(--success);
 }
+.dialog-icon.info {
+  background: var(--accent-soft);
+  color: var(--accent);
+}
 
 .dialog h2 {
   font-size: 1.1875rem;

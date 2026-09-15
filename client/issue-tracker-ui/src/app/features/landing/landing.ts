@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { Icon } from '../../shared/icon/icon';
 import { Loader } from '../../shared/loader/loader';
 import { Multiselect, MultiselectOption } from '../../shared/multiselect/multiselect';
+import { Select, SelectOption } from '../../shared/select/select';
 import { Tooltip } from '../../shared/tooltip/tooltip';
 import { Auth, UserResponse } from '../../core/auth';
 import { Bug as BugService, BugResponse, BugFilter, UpdateBugRequest } from '../../core/bug';
@@ -13,7 +14,7 @@ import { BugModal } from '../bug-modal/bug-modal';
 
 @Component({
   selector: 'app-landing',
-  imports: [FormsModule, Icon, Loader, Multiselect, Tooltip, BugModal],
+  imports: [FormsModule, Icon, Loader, Multiselect, Select, Tooltip, BugModal],
   templateUrl: './landing.html',
   styleUrl: './landing.css'
 })
@@ -84,8 +85,16 @@ export class Landing implements OnInit {
     });
   }
 
-  onVariantChange(value: string) {
-    this.selectedVariantId.set(value === 'ALL' ? null : Number(value));
+  get variantSelectOptions(): SelectOption[] {
+    return [{ value: 'ALL', label: 'All Variants' }, ...this.variants().map((v) => ({ value: v.id, label: v.name }))];
+  }
+
+  get statusSelectOptions(): SelectOption[] {
+    return this.statuses().map((s) => ({ value: s.name, label: s.name, icon: s.icon, color: s.color }));
+  }
+
+  onVariantChange(value: number | string | null) {
+    this.selectedVariantId.set(value === 'ALL' || value === null ? null : Number(value));
     this.loadBugs();
   }
 

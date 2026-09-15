@@ -1,17 +1,20 @@
 import { Component, OnInit, inject, signal } from '@angular/core';
 import { Router } from '@angular/router';
+import { forkJoin } from 'rxjs';
 import { Icon } from '../../shared/icon/icon';
+import { Loader } from '../../shared/loader/loader';
 import { LookupTab } from '../../shared/lookup-tab/lookup-tab';
 import { ColoredLookupTab, ColorOption } from '../../shared/colored-lookup-tab/colored-lookup-tab';
 import { Lookup, LookupItem, ColoredLookupItem, ColoredLookupRequest } from '../../core/lookup';
 import { Auth, UserResponse } from '../../core/auth';
 import { Toast } from '../../core/toast';
+import { Confirm } from '../../core/confirm';
 
 type Tab = 'users' | 'status' | 'impact' | 'variant' | 'build';
 
 @Component({
   selector: 'app-admin',
-  imports: [Icon, LookupTab, ColoredLookupTab],
+  imports: [Icon, Loader, LookupTab, ColoredLookupTab],
   templateUrl: './admin.html',
   styleUrl: './admin.css'
 })
@@ -20,8 +23,10 @@ export class Admin implements OnInit {
   private auth = inject(Auth);
   private router = inject(Router);
   private toast = inject(Toast);
+  private confirm = inject(Confirm);
 
   activeTab = signal<Tab>('users');
+  loading = signal(false);
 
   users = signal<UserResponse[]>([]);
   statuses = signal<ColoredLookupItem[]>([]);
@@ -53,11 +58,27 @@ export class Admin implements OnInit {
   ];
 
   ngOnInit() {
-    this.reloadUsers();
-    this.reloadStatuses();
-    this.reloadImpacts();
-    this.reloadVariants();
-    this.reloadBuilds();
+    this.loading.set(true);
+    forkJoin({
+      users: this.lookup.getUsers(),
+      statuses: this.lookup.getStatuses(),
+      impacts: this.lookup.getImpacts(),
+      variants: this.lookup.getVariants(),
+      builds: this.lookup.getBuilds()
+    }).subscribe({
+      next: (result) => {
+        this.users.set(result.users);
+        this.statuses.set(result.statuses);
+        this.impacts.set(result.impacts);
+        this.variants.set(result.variants);
+        this.builds.set(result.builds);
+        this.loading.set(false);
+      },
+      error: () => {
+        this.loading.set(false);
+        this.toast.error('Failed to load admin data.');
+      }
+    });
   }
 
   setTab(tab: Tab) {
@@ -129,7 +150,7 @@ export class Admin implements OnInit {
         this.toast.success('Status deleted.');
         this.reloadStatuses();
       },
-      error: (err) => this.statusError.set(err.error ?? 'Failed to delete status.')
+      error: (err) => this.confirm.alert({ title: 'Cannot delete status', message: err.error ?? 'Failed to delete status.' })
     });
   }
 
@@ -164,7 +185,7 @@ export class Admin implements OnInit {
         this.toast.success('Impact deleted.');
         this.reloadImpacts();
       },
-      error: (err) => this.impactError.set(err.error ?? 'Failed to delete impact.')
+      error: (err) => this.confirm.alert({ title: 'Cannot delete impact', message: err.error ?? 'Failed to delete impact.' })
     });
   }
 
@@ -199,7 +220,7 @@ export class Admin implements OnInit {
         this.toast.success('Variant deleted.');
         this.reloadVariants();
       },
-      error: (err) => this.variantError.set(err.error ?? 'Failed to delete variant.')
+      error: (err) => this.confirm.alert({ title: 'Cannot delete variant', message: err.error ?? 'Failed to delete variant.' })
     });
   }
 
@@ -234,7 +255,7 @@ export class Admin implements OnInit {
         this.toast.success('Build deleted.');
         this.reloadBuilds();
       },
-      error: (err) => this.buildError.set(err.error ?? 'Failed to delete build.')
+      error: (err) => this.confirm.alert({ title: 'Cannot delete build', message: err.error ?? 'Failed to delete build.' })
     });
   }
 }

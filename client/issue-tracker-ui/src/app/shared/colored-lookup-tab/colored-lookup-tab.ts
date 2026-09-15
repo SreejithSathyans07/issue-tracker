@@ -1,6 +1,7 @@
 import { Component, inject, input, output, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Icon, PICKABLE_ICON_NAMES } from '../icon/icon';
+import { Select, SelectOption } from '../select/select';
 import { ColoredLookupItem, ColoredLookupRequest } from '../../core/lookup';
 import { Confirm } from '../../core/confirm';
 
@@ -11,7 +12,7 @@ export interface ColorOption {
 
 @Component({
   selector: 'app-colored-lookup-tab',
-  imports: [FormsModule, Icon],
+  imports: [FormsModule, Icon, Select],
   templateUrl: './colored-lookup-tab.html',
   styleUrl: './colored-lookup-tab.css'
 })
@@ -31,6 +32,14 @@ export class ColoredLookupTab {
   delete = output<number>();
 
   protected iconOptions = PICKABLE_ICON_NAMES;
+
+  get colorSelectOptions(): SelectOption[] {
+    return this.colorOptions().map((c) => ({ value: c.value, label: c.label, color: c.value }));
+  }
+
+  get iconSelectOptions(): SelectOption[] {
+    return this.iconOptions.map((name) => ({ value: name, label: name, icon: name }));
+  }
 
   newName = signal('');
   newColor = signal('');

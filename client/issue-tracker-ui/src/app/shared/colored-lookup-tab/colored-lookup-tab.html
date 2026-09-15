@@ -10,19 +10,8 @@
       (ngModelChange)="newName.set($event)"
       (keydown.enter)="submitNew()"
     >
-    <select [ngModel]="newColor()" (ngModelChange)="newColor.set($event)">
-      @for (c of colorOptions(); track c.value) {
-        <option [value]="c.value">{{ c.label }}</option>
-      }
-    </select>
-    <select [ngModel]="newIcon()" (ngModelChange)="newIcon.set($event)">
-      @for (i of iconOptions; track i) {
-        <option [value]="i">{{ i }}</option>
-      }
-    </select>
-    <div class="icon-preview" [style.color]="newColor() || colorOptions()[0]?.value">
-      <app-icon [name]="newIcon()" [size]="16" />
-    </div>
+    <app-select class="color-select" [options]="colorSelectOptions" [ngModel]="newColor()" (ngModelChange)="newColor.set($event)" placeholder="Color" />
+    <app-select class="icon-select" [options]="iconSelectOptions" [ngModel]="newIcon()" (ngModelChange)="newIcon.set($event)" placeholder="Icon" />
     <button class="btn-primary" (click)="submitNew()">
       <app-icon name="plus" [size]="14" />
       Add
@@ -51,19 +40,8 @@
               (keydown.enter)="submitEdit(item.id)"
               (keydown.escape)="cancelEdit()"
             >
-            <select [ngModel]="editColor()" (ngModelChange)="editColor.set($event)">
-              @for (c of colorOptions(); track c.value) {
-                <option [value]="c.value">{{ c.label }}</option>
-              }
-            </select>
-            <select [ngModel]="editIcon()" (ngModelChange)="editIcon.set($event)">
-              @for (i of iconOptions; track i) {
-                <option [value]="i">{{ i }}</option>
-              }
-            </select>
-            <div class="icon-preview" [style.color]="editColor()">
-              <app-icon [name]="editIcon()" [size]="16" />
-            </div>
+            <app-select class="color-select" [options]="colorSelectOptions" [ngModel]="editColor()" (ngModelChange)="editColor.set($event)" placeholder="Color" />
+            <app-select class="icon-select" [options]="iconSelectOptions" [ngModel]="editIcon()" (ngModelChange)="editIcon.set($event)" placeholder="Icon" />
             <div class="item-actions">
               <button class="icon-btn save-btn" (click)="submitEdit(item.id)">
                 <app-icon name="check" [size]="15" />

@@ -1,0 +1,30 @@
+<div class="select-wrap">
+  <button type="button" class="select-btn" [class.disabled]="disabled()" [disabled]="disabled()" (click)="toggleOpen($event)">
+    @if (selectedOption(); as sel) {
+      @if (sel.color) {
+        <span class="swatch" [style.background]="sel.color"></span>
+      } @else if (sel.icon) {
+        <app-icon [name]="sel.icon" [size]="15" />
+      }
+      <span class="label">{{ sel.label }}</span>
+    } @else {
+      <span class="label placeholder">{{ placeholder() }}</span>
+    }
+    <app-icon name="chevron-down" [size]="14" class="chev" />
+  </button>
+
+  @if (open()) {
+    <div class="select-panel" (click)="$event.stopPropagation()">
+      @for (opt of options(); track opt.value) {
+        <div class="select-option" [class.selected]="opt.value === value()" (click)="choose(opt)">
+          @if (opt.color) {
+            <span class="swatch" [style.background]="opt.color"></span>
+          } @else if (opt.icon) {
+            <app-icon [name]="opt.icon" [size]="15" />
+          }
+          <span>{{ opt.label }}</span>
+        </div>
+      }
+    </div>
+  }
+</div>
