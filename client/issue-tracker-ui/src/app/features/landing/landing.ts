@@ -1,5 +1,7 @@
 import { Component, OnInit, inject, signal } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
+import { Subject, debounceTime, distinctUntilChanged } from 'rxjs';
 import { Icon } from '../../shared/icon/icon';
 import { Loader } from '../../shared/loader/loader';
 import { Multiselect, MultiselectOption } from '../../shared/multiselect/multiselect';
@@ -45,8 +47,12 @@ export class Landing implements OnInit {
   selectedResponsibleIds = signal<number[]>([]);
   selectedBuildIds = signal<number[]>([]);
   searchText = signal('');
+  private searchTextChanged = new Subject<string>();
+  private debouncedSearch$ = this.searchTextChanged.pipe(debounceTime(400), distinctUntilChanged(), takeUntilDestroyed());
 
   ngOnInit() {
+    this.debouncedSearch$.subscribe(() => this.loadBugs());
+
     this.loadBugs();
     this.lookup.getVariants().subscribe((v) => this.variants.set(v));
     this.lookup.getImpacts().subscribe((i) => this.impacts.set(i));
@@ -94,6 +100,11 @@ export class Landing implements OnInit {
   onVariantChange(value: number | string | null) {
     this.selectedVariantId.set(value === 'ALL' || value === null ? null : Number(value));
     this.loadBugs();
+  }
+
+  onSearchTextChange(value: string) {
+    this.searchText.set(value);
+    this.searchTextChanged.next(value);
   }
 
   applySearch() {

@@ -59,7 +59,7 @@
         class="search-box"
         placeholder="Search title/description..."
         [ngModel]="searchText()"
-        (ngModelChange)="searchText.set($event)"
+        (ngModelChange)="onSearchTextChange($event)"
         (keydown.enter)="applySearch()"
       >
       <app-multiselect
