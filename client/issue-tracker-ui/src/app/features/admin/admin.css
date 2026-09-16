@@ -113,6 +113,20 @@
   margin-bottom: 18px;
 }
 
+.permission-notice {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  padding: 48px 20px;
+  color: var(--ink-soft);
+  text-align: center;
+}
+.permission-notice p {
+  margin: 0;
+  font-size: 0.9375rem;
+}
+
 .callout {
   display: flex;
   align-items: center;

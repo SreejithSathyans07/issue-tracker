@@ -28,9 +28,7 @@
       @if (profileMenuOpen()) {
         <div class="profile-menu">
           <a><app-icon name="user" [size]="14" />My Profile</a>
-          @if (auth.isAdmin()) {
-            <a (click)="goToAdmin()"><app-icon name="settings" [size]="14" />Admin Settings</a>
-          }
+          <a (click)="goToAdmin()"><app-icon name="settings" [size]="14" />Configuration</a>
           <div class="divider"></div>
           <a (click)="logout()"><app-icon name="log-out" [size]="14" />Log Out</a>
         </div>

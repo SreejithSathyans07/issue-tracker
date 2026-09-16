@@ -30,7 +30,7 @@ public class BuildsController : ControllerBase
     }
 
     [HttpPost]
-    [Authorize(Policy = "Administration")]
+    [Authorize(Policy = "Writer")]
     public async Task<ActionResult<LookupItemResponse>> Create(LookupItemRequest request)
     {
         var build = new Build { Name = request.Name };
@@ -42,7 +42,7 @@ public class BuildsController : ControllerBase
     }
 
     [HttpPut("{id}")]
-    [Authorize(Policy = "Administration")]
+    [Authorize(Policy = "Writer")]
     public async Task<ActionResult<LookupItemResponse>> Update(int id, LookupItemRequest request)
     {
         var build = await _db.Builds.FindAsync(id);
@@ -58,7 +58,7 @@ public class BuildsController : ControllerBase
     }
 
     [HttpDelete("{id}")]
-    [Authorize(Policy = "Administration")]
+    [Authorize(Policy = "Writer")]
     public async Task<IActionResult> Delete(int id)
     {
         var build = await _db.Builds.FindAsync(id);

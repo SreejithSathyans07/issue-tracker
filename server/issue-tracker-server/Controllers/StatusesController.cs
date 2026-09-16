@@ -30,7 +30,7 @@ public class StatusesController : ControllerBase
     }
 
     [HttpPost]
-    [Authorize(Policy = "Administration")]
+    [Authorize(Policy = "Writer")]
     public async Task<ActionResult<ColoredLookupItemResponse>> Create(ColoredLookupItemRequest request)
     {
         var status = new Status { Name = request.Name, Color = request.Color, Icon = request.Icon };
@@ -42,7 +42,7 @@ public class StatusesController : ControllerBase
     }
 
     [HttpPut("{id}")]
-    [Authorize(Policy = "Administration")]
+    [Authorize(Policy = "Writer")]
     public async Task<ActionResult<ColoredLookupItemResponse>> Update(int id, ColoredLookupItemRequest request)
     {
         var status = await _db.Statuses.FindAsync(id);
@@ -60,7 +60,7 @@ public class StatusesController : ControllerBase
     }
 
     [HttpDelete("{id}")]
-    [Authorize(Policy = "Administration")]
+    [Authorize(Policy = "Writer")]
     public async Task<IActionResult> Delete(int id)
     {
         var status = await _db.Statuses.FindAsync(id);

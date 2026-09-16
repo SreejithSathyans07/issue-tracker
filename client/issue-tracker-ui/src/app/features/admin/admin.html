@@ -1,6 +1,6 @@
 <div class="topbar">
   <div>
-    <h1>Admin Settings</h1>
+    <h1>Configuration</h1>
     <div class="subtitle">Manage team members and lookup values used across bug reports</div>
   </div>
   <button class="btn-ghost" (click)="back()">
@@ -35,47 +35,54 @@
 
   @switch (activeTab()) {
     @case ('users') {
-      <div class="card">
-        <h3>Team members</h3>
-        <div class="desc">Promote a member to Admin to give them access to this settings page, or demote back to Member.</div>
+      @if (auth.isAdmin()) {
+        <div class="card">
+          <h3>Team members</h3>
+          <div class="desc">Promote a member to Admin to give them access to this settings page, or demote back to Member.</div>
 
-        @if (userError()) {
-          <div class="callout callout-error">
-            <app-icon name="alert-circle" [size]="15" />
-            <span>{{ userError() }}</span>
-          </div>
-        }
-
-        <div class="item-list">
-          @for (u of users(); track u.id) {
-            <div class="user-row">
-              <div class="user-left">
-                <div class="user-avatar">{{ initials(u.name) }}</div>
-                <div>
-                  <div class="user-name">{{ u.name }}</div>
-                  <div class="user-username mono">&#64;{{ u.username }}</div>
-                </div>
-              </div>
-              <div class="user-right">
-                <span class="role-badge" [class.admin]="u.role === 'Admin'" [class.member]="u.role !== 'Admin'">
-                  <app-icon [name]="u.role === 'Admin' ? 'shield' : 'user'" [size]="12" />
-                  {{ u.role === 'Admin' ? 'Admin' : 'Member' }}
-                </span>
-                <button
-                  class="role-toggle-btn"
-                  [class.promote]="u.role !== 'Admin'"
-                  [class.demote]="u.role === 'Admin'"
-                  [disabled]="u.id === currentUserId()"
-                  (click)="toggleRole(u)"
-                >
-                  <app-icon [name]="u.role === 'Admin' ? 'arrow-down' : 'arrow-up'" [size]="13" />
-                  {{ u.role === 'Admin' ? 'Demote' : 'Promote to Admin' }}
-                </button>
-              </div>
+          @if (userError()) {
+            <div class="callout callout-error">
+              <app-icon name="alert-circle" [size]="15" />
+              <span>{{ userError() }}</span>
             </div>
           }
+
+          <div class="item-list">
+            @for (u of users(); track u.id) {
+              <div class="user-row">
+                <div class="user-left">
+                  <div class="user-avatar">{{ initials(u.name) }}</div>
+                  <div>
+                    <div class="user-name">{{ u.name }}</div>
+                    <div class="user-username mono">&#64;{{ u.username }}</div>
+                  </div>
+                </div>
+                <div class="user-right">
+                  <span class="role-badge" [class.admin]="u.role === 'Admin'" [class.member]="u.role !== 'Admin'">
+                    <app-icon [name]="u.role === 'Admin' ? 'shield' : 'user'" [size]="12" />
+                    {{ u.role === 'Admin' ? 'Admin' : 'Member' }}
+                  </span>
+                  <button
+                    class="role-toggle-btn"
+                    [class.promote]="u.role !== 'Admin'"
+                    [class.demote]="u.role === 'Admin'"
+                    [disabled]="u.id === currentUserId()"
+                    (click)="toggleRole(u)"
+                  >
+                    <app-icon [name]="u.role === 'Admin' ? 'arrow-down' : 'arrow-up'" [size]="13" />
+                    {{ u.role === 'Admin' ? 'Demote' : 'Promote to Admin' }}
+                  </button>
+                </div>
+              </div>
+            }
+          </div>
         </div>
-      </div>
+      } @else {
+        <div class="card permission-notice">
+          <app-icon name="lock" [size]="28" />
+          <p>You don't have enough permission to view this. Contact the administrator.</p>
+        </div>
+      }
     }
 
     @case ('status') {
@@ -109,17 +116,24 @@
     }
 
     @case ('variant') {
-      <app-lookup-tab
-        heading="Add a new variant"
-        description="Appears as an option for the Variant field on each bug, and as a filter across the app."
-        placeholder="e.g. UK"
-        itemLabel="variant"
-        [items]="variants()"
-        [error]="variantError()"
-        (create)="createVariant($event)"
-        (update)="updateVariant($event)"
-        (delete)="deleteVariant($event)"
-      />
+      @if (auth.isAdmin()) {
+        <app-lookup-tab
+          heading="Add a new variant"
+          description="Appears as an option for the Variant field on each bug, and as a filter across the app."
+          placeholder="e.g. UK"
+          itemLabel="variant"
+          [items]="variants()"
+          [error]="variantError()"
+          (create)="createVariant($event)"
+          (update)="updateVariant($event)"
+          (delete)="deleteVariant($event)"
+        />
+      } @else {
+        <div class="card permission-notice">
+          <app-icon name="lock" [size]="28" />
+          <p>You don't have enough permission to view this. Contact the administrator.</p>
+        </div>
+      }
     }
 
     @case ('build') {

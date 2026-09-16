@@ -30,7 +30,7 @@ public class ImpactsController : ControllerBase
     }
 
     [HttpPost]
-    [Authorize(Policy = "Administration")]
+    [Authorize(Policy = "Writer")]
     public async Task<ActionResult<ColoredLookupItemResponse>> Create(ColoredLookupItemRequest request)
     {
         var impact = new Impact { Name = request.Name, Color = request.Color, Icon = request.Icon };
@@ -42,7 +42,7 @@ public class ImpactsController : ControllerBase
     }
 
     [HttpPut("{id}")]
-    [Authorize(Policy = "Administration")]
+    [Authorize(Policy = "Writer")]
     public async Task<ActionResult<ColoredLookupItemResponse>> Update(int id, ColoredLookupItemRequest request)
     {
         var impact = await _db.Impacts.FindAsync(id);
@@ -60,7 +60,7 @@ public class ImpactsController : ControllerBase
     }
 
     [HttpDelete("{id}")]
-    [Authorize(Policy = "Administration")]
+    [Authorize(Policy = "Writer")]
     public async Task<IActionResult> Delete(int id)
     {
         var impact = await _db.Impacts.FindAsync(id);

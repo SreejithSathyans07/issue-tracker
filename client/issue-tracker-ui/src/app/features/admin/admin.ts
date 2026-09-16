@@ -1,6 +1,6 @@
 import { Component, OnInit, inject, signal } from '@angular/core';
 import { Router } from '@angular/router';
-import { forkJoin } from 'rxjs';
+import { forkJoin, of } from 'rxjs';
 import { Icon } from '../../shared/icon/icon';
 import { Loader } from '../../shared/loader/loader';
 import { LookupTab } from '../../shared/lookup-tab/lookup-tab';
@@ -20,7 +20,7 @@ type Tab = 'users' | 'status' | 'impact' | 'variant' | 'build';
 })
 export class Admin implements OnInit {
   private lookup = inject(Lookup);
-  private auth = inject(Auth);
+  protected auth = inject(Auth);
   private router = inject(Router);
   private toast = inject(Toast);
   private confirm = inject(Confirm);
@@ -60,7 +60,7 @@ export class Admin implements OnInit {
   ngOnInit() {
     this.loading.set(true);
     forkJoin({
-      users: this.lookup.getUsers(),
+      users: this.auth.isAdmin() ? this.lookup.getUsers() : of([]),
       statuses: this.lookup.getStatuses(),
       impacts: this.lookup.getImpacts(),
       variants: this.lookup.getVariants(),
