@@ -26,7 +26,7 @@ export class Admin implements OnInit {
   private toast = inject(Toast);
   private confirm = inject(Confirm);
 
-  activeTab = signal<Tab>('users');
+  activeTab = signal<Tab>('status');
   loading = signal(false);
 
   users = signal<UserResponse[]>([]);
