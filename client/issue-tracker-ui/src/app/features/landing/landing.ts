@@ -1,11 +1,11 @@
-import { Component, HostListener, OnInit, inject, signal } from '@angular/core';
-import { Router } from '@angular/router';
+import { Component, OnInit, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Icon } from '../../shared/icon/icon';
 import { Loader } from '../../shared/loader/loader';
 import { Multiselect, MultiselectOption } from '../../shared/multiselect/multiselect';
 import { Select, SelectOption } from '../../shared/select/select';
 import { Tooltip } from '../../shared/tooltip/tooltip';
+import { ProfileMenu } from '../../shared/profile-menu/profile-menu';
 import { Auth, UserResponse } from '../../core/auth';
 import { Bug as BugService, BugResponse, BugFilter, UpdateBugRequest } from '../../core/bug';
 import { Lookup, LookupItem, ColoredLookupItem } from '../../core/lookup';
@@ -14,13 +14,12 @@ import { BugModal } from '../bug-modal/bug-modal';
 
 @Component({
   selector: 'app-landing',
-  imports: [FormsModule, Icon, Loader, Multiselect, Select, Tooltip, BugModal],
+  imports: [FormsModule, Icon, Loader, Multiselect, Select, Tooltip, ProfileMenu, BugModal],
   templateUrl: './landing.html',
   styleUrl: './landing.css'
 })
 export class Landing implements OnInit {
   protected auth = inject(Auth);
-  private router = inject(Router);
   private bugService = inject(BugService);
   private lookup = inject(Lookup);
   private toast = inject(Toast);
@@ -35,7 +34,6 @@ export class Landing implements OnInit {
   builds = signal<LookupItem[]>([]);
   users = signal<UserResponse[]>([]);
 
-  profileMenuOpen = signal(false);
   modalOpen = signal(false);
   modalMode = signal<'add' | 'edit'>('add');
   editingBug = signal<BugResponse | null>(null);
@@ -149,16 +147,6 @@ export class Landing implements OnInit {
     return '0.5625rem';
   }
 
-  initials(name: string | undefined): string {
-    if (!name) return '';
-    return name
-      .split(' ')
-      .map((p) => p[0])
-      .join('')
-      .slice(0, 2)
-      .toUpperCase();
-  }
-
   impactMeta(name: string): ColoredLookupItem | null {
     return this.impacts().find((i) => i.name === name) ?? null;
   }
@@ -171,24 +159,6 @@ export class Landing implements OnInit {
     if (impact === 'Blocker') return 'sev-blocker';
     if (impact === 'Critical') return 'sev-high';
     return '';
-  }
-
-  toggleProfileMenu() {
-    this.profileMenuOpen.set(!this.profileMenuOpen());
-  }
-
-  @HostListener('document:click')
-  closeProfileMenu() {
-    this.profileMenuOpen.set(false);
-  }
-
-  logout() {
-    this.auth.logout();
-    this.router.navigate(['/login']);
-  }
-
-  goToAdmin() {
-    this.router.navigate(['/admin']);
   }
 
   openAddModal() {

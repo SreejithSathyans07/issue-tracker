@@ -5,6 +5,7 @@ import { Icon } from '../../shared/icon/icon';
 import { Loader } from '../../shared/loader/loader';
 import { LookupTab } from '../../shared/lookup-tab/lookup-tab';
 import { ColoredLookupTab, ColorOption } from '../../shared/colored-lookup-tab/colored-lookup-tab';
+import { ProfileMenu } from '../../shared/profile-menu/profile-menu';
 import { Lookup, LookupItem, ColoredLookupItem, ColoredLookupRequest } from '../../core/lookup';
 import { Auth, UserResponse } from '../../core/auth';
 import { Toast } from '../../core/toast';
@@ -14,7 +15,7 @@ type Tab = 'users' | 'status' | 'impact' | 'variant' | 'build';
 
 @Component({
   selector: 'app-admin',
-  imports: [Icon, Loader, LookupTab, ColoredLookupTab],
+  imports: [Icon, Loader, LookupTab, ColoredLookupTab, ProfileMenu],
   templateUrl: './admin.html',
   styleUrl: './admin.css'
 })

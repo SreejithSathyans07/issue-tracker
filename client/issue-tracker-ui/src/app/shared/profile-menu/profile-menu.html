@@ -1,0 +1,19 @@
+<div class="profile-chip" (click)="toggleMenu(); $event.stopPropagation()">
+  <div class="profile-avatar">{{ initials(auth.getUser()?.name) }}</div>
+  <div>
+    <div class="profile-name">{{ auth.getUser()?.name }}</div>
+    <div class="profile-role">{{ auth.getUser()?.role === 'Admin' ? 'Admin' : 'Team Member' }}</div>
+  </div>
+  <app-icon name="chevron-down" [size]="13" />
+
+  @if (menuOpen()) {
+    <div class="profile-menu">
+      <a><app-icon name="user" [size]="14" />My Profile</a>
+      @if (!hideConfigLink()) {
+        <a (click)="goToAdmin()"><app-icon name="settings" [size]="14" />Configuration</a>
+      }
+      <div class="divider"></div>
+      <a (click)="logout()"><app-icon name="log-out" [size]="14" />Log Out</a>
+    </div>
+  }
+</div>

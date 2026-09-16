@@ -3,10 +3,13 @@
     <h1>Configuration</h1>
     <div class="subtitle">Manage team members and lookup values used across bug reports</div>
   </div>
-  <button class="btn-ghost" (click)="back()">
-    <app-icon name="arrow-left" [size]="14" />
-    Back to Bug List
-  </button>
+  <div class="right">
+    <button class="btn-ghost" (click)="back()">
+      <app-icon name="arrow-left" [size]="14" />
+      Back to Bug List
+    </button>
+    <app-profile-menu [hideConfigLink]="true" />
+  </div>
 </div>
 
 <div class="container">
@@ -29,7 +32,7 @@
     </div>
     <div class="tab" [class.active]="activeTab() === 'build'" (click)="setTab('build')">
       <app-icon name="package" [size]="14" />
-      Affected Builds
+      Builds
     </div>
   </div>
 
@@ -138,7 +141,7 @@
 
     @case ('build') {
       <app-lookup-tab
-        heading="Add a new affected build"
+        heading="Add a new build"
         description="Appears as an option for Affected Build / Fixed Build fields."
         placeholder="e.g. 2.5.0"
         itemLabel="build"

@@ -1,0 +1,74 @@
+:host {
+  display: block;
+}
+
+.profile-chip {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  cursor: pointer;
+  padding: 6px 12px 6px 6px;
+  border-radius: 20px;
+  border: 1px solid var(--border);
+  position: relative;
+}
+.profile-chip:hover {
+  background: var(--accent-soft);
+}
+.profile-avatar {
+  width: 2rem;
+  height: 2rem;
+  border-radius: 50%;
+  background: var(--accent);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.8125rem;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+.profile-name {
+  font-size: 0.9375rem;
+  font-weight: 600;
+  line-height: 1.1;
+}
+.profile-role {
+  font-size: 0.75rem;
+  color: var(--ink-soft);
+}
+.profile-chip app-icon {
+  color: var(--ink-soft);
+}
+.profile-menu {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.1);
+  min-width: 170px;
+  z-index: 30;
+  overflow: hidden;
+}
+.profile-menu a {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 14px;
+  font-size: 0.9375rem;
+  color: var(--ink);
+  text-decoration: none;
+  cursor: pointer;
+}
+.profile-menu a:hover {
+  background: var(--accent-soft);
+}
+.profile-menu a app-icon {
+  color: var(--ink-soft);
+}
+.profile-menu .divider {
+  height: 1px;
+  background: var(--border);
+}
