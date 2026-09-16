@@ -37,6 +37,10 @@ export class Auth {
     return this.http.post<UserResponse>(`${environment.apiBaseUrl}/auth/signup`, request);
   }
 
+  warmup(): Observable<void> {
+    return this.http.get<void>(`${environment.apiBaseUrl}/auth/warmup`);
+  }
+
   login(request: LoginRequest): Observable<LoginResponse> {
     return this.http.post<LoginResponse>(`${environment.apiBaseUrl}/auth/login`, request).pipe(
       tap((response) => {

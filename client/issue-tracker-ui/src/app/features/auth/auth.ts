@@ -38,6 +38,11 @@ export class AuthPage {
 
   loggingIn = signal(false);
   signingUp = signal(false);
+  slowLogin = signal(false);
+  slowSignup = signal(false);
+
+  private loginWarmupTimer?: ReturnType<typeof setTimeout>;
+  private signupWarmupTimer?: ReturnType<typeof setTimeout>;
 
   loginForm = this.fb.group({
     username: ['', [Validators.required, Validators.maxLength(30)]],
@@ -83,13 +88,18 @@ export class AuthPage {
 
     const { username, password } = this.loginForm.getRawValue();
     this.loggingIn.set(true);
+    this.slowLogin.set(false);
+    this.loginWarmupTimer = setTimeout(() => this.slowLogin.set(true), 3000);
 
     this.authService.login({ username: username!, password: password! }).subscribe({
       next: () => {
+        clearTimeout(this.loginWarmupTimer);
         this.router.navigate(['/bugs']);
       },
       error: () => {
+        clearTimeout(this.loginWarmupTimer);
         this.loggingIn.set(false);
+        this.slowLogin.set(false);
         this.loginError.set('Incorrect username or password.');
       }
     });
@@ -112,15 +122,21 @@ export class AuthPage {
 
     const { name, username, password } = this.signupForm.getRawValue();
     this.signingUp.set(true);
+    this.slowSignup.set(false);
+    this.signupWarmupTimer = setTimeout(() => this.slowSignup.set(true), 3000);
 
     this.authService.signup({ name: name!, username: username!, password: password! }).subscribe({
       next: () => {
+        clearTimeout(this.signupWarmupTimer);
         this.signingUp.set(false);
+        this.slowSignup.set(false);
         this.signupSuccess.set(true);
         this.signupForm.reset();
       },
       error: (err) => {
+        clearTimeout(this.signupWarmupTimer);
         this.signingUp.set(false);
+        this.slowSignup.set(false);
         this.signupError.set(err.error ?? 'Something went wrong. Please try again.');
       }
     });

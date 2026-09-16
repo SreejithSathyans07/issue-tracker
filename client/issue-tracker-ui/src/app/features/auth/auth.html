@@ -159,5 +159,8 @@
 @if (loggingIn() || signingUp()) {
   <div class="loading-overlay">
     <app-loader [size]="22" />
+    @if (slowLogin() || slowSignup()) {
+      <div class="loading-message">First request can take a bit longer while things wake up...</div>
+    }
   </div>
 }

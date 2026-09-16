@@ -1,6 +1,7 @@
 using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using issue_tracker_server.Data;
 using issue_tracker_server.Dtos;
 using issue_tracker_server.Services;
 
@@ -11,10 +12,19 @@ namespace issue_tracker_server.Controllers;
 public class AuthController : ControllerBase
 {
     private readonly IAuthService _authService;
+    private readonly AppDbContext _context;
 
-    public AuthController(IAuthService authService)
+    public AuthController(IAuthService authService, AppDbContext context)
     {
         _authService = authService;
+        _context = context;
+    }
+
+    [HttpGet("warmup")]
+    public async Task<IActionResult> Warmup()
+    {
+        await _context.Database.CanConnectAsync();
+        return Ok();
     }
 
     [HttpGet("check-username")]
